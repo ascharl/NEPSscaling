@@ -64,7 +64,7 @@ remove_constant_not_reached <- function(nr, sel) {
 #' @return list of vector(s) of response item names
 #' @noRd
 determine_response_items <- function(SC, domain, data, wave, longitudinal) {
-  sel <- lapply(item_labels[[SC]][[domain]],
+  sel <- lapply(item_labels[[domain]][[SC]],
                 function(it) {names(data) %in% it})
   if (longitudinal) {
     if (SC == "SC2" && domain == "SC") {

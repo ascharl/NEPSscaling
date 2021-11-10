@@ -23,6 +23,10 @@ discard_not_used_imputations <- function(datalist, regr.coeff, EAP.rel,
   keep <- determine_used_imputations(datalist)
   # if only one imputation was sampled or no bgdata supplied, exit
   if (length(keep[[1]]) == 1) {
+    if (longitudinal) {
+      names(EAP.rel) <- names(regr.coeff) <- names(info_crit) <- names(variance) <-
+        names(eap) <- keep[[2]]
+    }
     return(list(regr.coeff = regr.coeff, EAP.rel = EAP.rel,
                 info_crit = info_crit, treeplot = treeplot,
                 variable_importance = variable_importance, variance = variance,

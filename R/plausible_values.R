@@ -154,16 +154,45 @@
 #' rm(list = ls())
 #' library(NEPSscaling)
 #' library(foreign)
+#' ## LONGITUDINAL ESTIMATION FOR "SC3"
 #' ## read in data object for conditioning variables
-#' data(bg_data)
-#' bg_data$gender <- as.factor(bg_data$gender)
+#' data("bgdata_sc3")
 #' ## define path to NEPS competence data
 #' path <- "Usr/NEPS-data/"
 #' setwd(path)
 #' ## save simulated target competencies to path
-#' data(xTargetCompetencies_sim)
+#' data("xTargetCompetencies_sc3")
 #' write.dta(
-#'   dataframe = xTargetCompetencies_sim,
+#'   dataframe = xTargetCompetencies_sc3,
+#'   file = "SC3_xTargetCompetencies_sim.dta"
+#' )
+#' ## save simulated school ids to path
+#' data("CohortProfile_sc3")
+#' write.dta(
+#'   dataframe = CohortProfile_sc3,
+#'   file = "SC3_CohortProfile.dta"
+#' )
+#' ## estimate default number of 10 plausible values
+#' ## note: the example background data is completely observed!
+#' result <- plausible_values(
+#'   SC = 3,
+#'   domain = "MA",
+#'   # longitudinal = TRUE,
+#'   wave = 1,
+#'   bgdata = bgdata_sc3,
+#'   path = path
+#' )
+#'
+#' ## CROSS-SECTIONal ESTIMATION FOR "SC6"
+#' ## read in data object for conditioning variables
+#' data("bgdata_sc6")
+#' ## define path to NEPS competence data
+#' path <- "Usr/NEPS-data/"
+#' setwd(path)
+#' ## save simulated target competencies to path
+#' data("xTargetCompetencies_sc6")
+#' write.dta(
+#'   dataframe = xTargetCompetencies_sc6,
 #'   file = "SC6_xTargetCompetencies_sim.dta"
 #' )
 #' ## estimate default number of 10 plausible values
@@ -172,7 +201,7 @@
 #'   SC = 6,
 #'   domain = "RE",
 #'   wave = 3,
-#'   bgdata = bg_data,
+#'   bgdata = bgdata_sc6,
 #'   path = path
 #' )
 #' }
@@ -260,7 +289,7 @@ plausible_values <- function(SC,
   if (!grepl("/$", path)) {
     path <- paste0(path, "/")
   }
-  if (is.null(item_labels[[SC]][[domain]][[wave]])) {
+  if (is.null(item_labels[[domain]][[SC]][[wave]])) {
     stop(paste0(
       "There were no competence tests for ", SC, " ", domain, " ",
       wave, ". Please check the NEPS documentation at https://neps-data.de."
@@ -291,7 +320,7 @@ plausible_values <- function(SC,
   if (min_valid < 0) {
     stop("min_valid must be greater than or equal to 0.", call. = FALSE)
   }
-  if (min_valid >= length(item_labels[[SC]][[domain]][[wave]])) {
+  if (min_valid >= length(item_labels[[domain]][[SC]][[wave]])) {
     stop("min_valid is too high. It excludes all possible test takers.",
          call. = FALSE)
   }
@@ -497,8 +526,10 @@ plausible_values <- function(SC,
   variance <- res[["variance"]]
 
   # add standardized regression coefficients
-  regr.coeff <- calculate_standardized_regr_coeff(regr.coeff, datalist,
-                                                  longitudinal, waves, variance)
+  if (!is.null(bgdata)) {
+    regr.coeff <- calculate_standardized_regr_coeff(regr.coeff, datalist,
+                                                    longitudinal, waves, variance)
+  }
 
   # linking of longitudinal plausible values ----------------------------------
 

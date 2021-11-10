@@ -175,16 +175,45 @@ https://www.neps-data.de/en-us/datacenter/dataaccess.aspx.
 rm(list = ls())
 library(NEPSscaling)
 library(foreign)
+## LONGITUDINAL ESTIMATION FOR "SC3"
 ## read in data object for conditioning variables
-data(bg_data)
-bg_data$gender <- as.factor(bg_data$gender)
+data("bgdata_sc3")
 ## define path to NEPS competence data
 path <- "Usr/NEPS-data/"
 setwd(path)
 ## save simulated target competencies to path
-data(xTargetCompetencies_sim)
+data("xTargetCompetencies_sc3")
 write.dta(
-  dataframe = xTargetCompetencies_sim,
+  dataframe = xTargetCompetencies_sc3,
+  file = "SC3_xTargetCompetencies_sim.dta"
+)
+## save simulated school ids to path
+data("CohortProfile_sc3")
+write.dta(
+  dataframe = CohortProfile_sc3,
+  file = "SC3_CohortProfile.dta"
+)
+## estimate default number of 10 plausible values
+## note: the example background data is completely observed!
+result <- plausible_values(
+  SC = 3,
+  domain = "MA",
+  # longitudinal = TRUE,
+  wave = 1,
+  bgdata = bgdata_sc3,
+  path = path
+)
+
+## CROSS-SECTIONal ESTIMATION FOR "SC6"
+## read in data object for conditioning variables
+data("bgdata_sc6")
+## define path to NEPS competence data
+path <- "Usr/NEPS-data/"
+setwd(path)
+## save simulated target competencies to path
+data("xTargetCompetencies_sc6")
+write.dta(
+  dataframe = xTargetCompetencies_sc6,
   file = "SC6_xTargetCompetencies_sim.dta"
 )
 ## estimate default number of 10 plausible values
@@ -193,7 +222,7 @@ result <- plausible_values(
   SC = 6,
   domain = "RE",
   wave = 3,
-  bgdata = bg_data,
+  bgdata = bgdata_sc6,
   path = path
 )
 }

@@ -667,6 +667,9 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["mag9r14s_c"]][resp[["mag9r14s_c"]] == 2] <- 1
         resp[["mag9r14s_c"]][resp[["mag9r14s_c"]] == 3] <- 2
         resp[["mag9r14s_c"]][resp[["mag9r14s_c"]] == 4] <- 3
+      } else if (wave == "w9") {
+        resp[["mas1q02s_sc3g12_c"]][resp[["mas1q02s_sc3g12_c"]] %in% c(1, 2, 3)] <- 0
+        resp[["mas1q02s_sc3g12_c"]][resp[["mas1q02s_sc3g12_c"]] == 4] <- 1
       }
     } else if (domain == "RE"){
       if (wave == "w1") {
@@ -727,54 +730,54 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["reg122501s_sc3g12_c"]][resp[["reg122501s_sc3g12_c"]] == 3] <- 1
       }
     } else if (domain == "SC") {
-      if (wave == "w2") {
-        resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 1] <- 0
-        resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 2] <- 0
-        resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 3] <- 0
-        resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 4] <- 1
-
-        resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 1] <- 0
-        resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 2] <- 0
-        resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 3] <- 0
-        resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 4] <- 1
-
-        resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 1] <- 0
-        resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 2] <- 0
-        resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 3] <- 0
-        resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 4] <- 1
-
-        resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 1] <- 0
-        resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 2] <- 1
-        resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 3] <- 2
-        resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 4] <- 3
-
-        resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 1] <- 0
-        resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 2] <- 0
-        resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 3] <- 0
-        resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 4] <- 1
-
-        resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 1] <- 0
-        resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 2] <- 0
-        resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 3] <- 0
-        resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 4] <- 1
-
-        resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 1] <- 0
-        resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 2] <- 0
-        resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 3] <- 1
-        resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 4] <- 2
-
-        resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 1] <- 0
-        resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 2] <- 0
-        resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 3] <- 0
-        resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 4] <- 1
+      if (wave == "w2") { # already collapsed in SUF
+        # resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 1] <- 0
+        # resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 2] <- 0
+        # resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 3] <- 0
+        # resp[["scg6103s_c"]][resp[["scg6103s_c"]] == 4] <- 1
+        #
+        # resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 1] <- 0
+        # resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 2] <- 0
+        # resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 3] <- 0
+        # resp[["scg6142s_c"]][resp[["scg6142s_c"]] == 4] <- 1
+        #
+        # resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 1] <- 0
+        # resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 2] <- 0
+        # resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 3] <- 0
+        # resp[["scg6144s_c"]][resp[["scg6144s_c"]] == 4] <- 1
+        #
+        # resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 1] <- 0
+        # resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 2] <- 1
+        # resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 3] <- 2
+        # resp[["scg6661s_c"]][resp[["scg6661s_c"]] == 4] <- 3
+        #
+        # resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 1] <- 0
+        # resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 2] <- 0
+        # resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 3] <- 0
+        # resp[["scg6664s_c"]][resp[["scg6664s_c"]] == 4] <- 1
+        #
+        # resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 1] <- 0
+        # resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 2] <- 0
+        # resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 3] <- 0
+        # resp[["scg6111s_c"]][resp[["scg6111s_c"]] == 4] <- 1
+        #
+        # resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 1] <- 0
+        # resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 2] <- 0
+        # resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 3] <- 1
+        # resp[["scg6113s_c"]][resp[["scg6113s_c"]] == 4] <- 2
+        #
+        # resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 1] <- 0
+        # resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 2] <- 0
+        # resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 3] <- 0
+        # resp[["scg6061s_c"]][resp[["scg6061s_c"]] == 4] <- 1
       } else if (wave == "w5") {
         resp[["scg9012s_sc3g9_c"]][resp[["scg9012s_sc3g9_c"]] == 1] <- 0
         resp[["scg9012s_sc3g9_c"]][resp[["scg9012s_sc3g9_c"]] == 2] <- 1
         resp[["scg9012s_sc3g9_c"]][resp[["scg9012s_sc3g9_c"]] == 3] <- 2
 
-        resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 1] <- 0
-        resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 2] <- 1
-        resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 3] <- 2
+        # resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 1] <- 0 # not part of the SUF
+        # resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 2] <- 1
+        # resp[["scg9611s_sc3g9_c"]][resp[["scg9611s_sc3g9_c"]] == 3] <- 2
 
         resp[["scg9083s_sc3g9_c"]][resp[["scg9083s_sc3g9_c"]] == 1] <- 0
         resp[["scg9083s_sc3g9_c"]][resp[["scg9083s_sc3g9_c"]] == 2] <- 1
@@ -820,7 +823,6 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
       if (wave == "w5") {
         # collapsed in SUF, but still cell frequencies < 200
       } else if (wave == "w9") {
-        # no TR
         #1
         resp[["icg12018s_sc3g12_c"]][resp[["icg12018s_sc3g12_c"]] %in% 1:3] <- 0
         resp[["icg12018s_sc3g12_c"]][resp[["icg12018s_sc3g12_c"]] == 4] <- 1
@@ -838,12 +840,13 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["icg12060s_sc3g12_c"]][resp[["icg12060s_sc3g12_c"]] %in% 1:3] <- 0
         resp[["icg12060s_sc3g12_c"]][resp[["icg12060s_sc3g12_c"]] == 4] <- 1
         # 9
-        resp[["icg12013s_sc3g12_c"]][resp[["icg12013s_sc3g12_c"]] == 1] <- 0
-        resp[["icg12013s_sc3g12_c"]][resp[["icg12013s_sc3g12_c"]] %in% 2:3] <- 1
+        resp[["icg12013s_sc3g12_c"]][resp[["icg12013s_sc3g12_c"]] %in% 1:2] <- 0
+        resp[["icg12013s_sc3g12_c"]][resp[["icg12013s_sc3g12_c"]] == 3] <- 1
         #10
-        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] %in% 2:5] <- 2
-        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] %in% 6:7] <- 3
-        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] == 8] <- 4
+        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] == 1] <- 0
+        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] %in% 2:5] <- 1
+        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] %in% 6:7] <- 2
+        resp[["ica4018s_sc3g12_c"]][resp[["ica4018s_sc3g12_c"]] == 8] <- 3
         #11
         resp[["icg12016s_sc3g12_c"]][resp[["icg12016s_sc3g12_c"]] %in% 1:2] <- 0
         resp[["icg12016s_sc3g12_c"]][resp[["icg12016s_sc3g12_c"]] == 3] <- 1
@@ -858,17 +861,18 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["icg12138s_sc3g12_c"]][resp[["icg12138s_sc3g12_c"]] == 3] <- 1
         resp[["icg12138s_sc3g12_c"]][resp[["icg12138s_sc3g12_c"]] == 4] <- 2
         #23
-        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] %in% 1:6] <- 0
-        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 7] <- 1
-        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 8] <- 2
-        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 9] <- 3
-        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 10] <- 4
+        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] %in% 1:2] <- 0
+        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 3] <- 1
+        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 4] <- 2
+        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 5] <- 3
+        resp[["icg12047s_sc3g12_c"]][resp[["icg12047s_sc3g12_c"]] == 6] <- 4
         #25
-        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] %in% 1:2] <- 0
-        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 3] <- 1
-        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 4] <- 2
-        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 5] <- 3
-        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 6] <- 4
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 1] <- 0
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 2] <- 1
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 3] <- 2
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 4] <- 3
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 5] <- 4
+        resp[["icg12046s_sc3g12_c"]][resp[["icg12046s_sc3g12_c"]] == 6] <- 5
         #26
         resp[["ica4021s_sc3g12_c"]][resp[["ica4021s_sc3g12_c"]] %in% 1:4] <- 0
         resp[["ica4021s_sc3g12_c"]][resp[["ica4021s_sc3g12_c"]] == 5] <- 1
@@ -883,24 +887,25 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["icg12048s_sc3g12_c"]][resp[["icg12048s_sc3g12_c"]] == 4] <- 2
         resp[["icg12048s_sc3g12_c"]][resp[["icg12048s_sc3g12_c"]] == 5] <- 3
         #29
-        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] %in% 1:4] <- 0
-        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] == 5] <- 1
-        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] == 6] <- 2
+        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] %in% 1:3] <- 0
+        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] == 4] <- 1
+        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] == 5] <- 2
+        resp[["icg12050s_sc3g12_c"]][resp[["icg12050s_sc3g12_c"]] == 6] <- 3
         #30
-        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 1] <- 0
-        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 2] <- 1
-        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 3] <- 2
-        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 4] <- 3
+        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] %in% 1:3] <- 0
+        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 3] <- 1
+        resp[["icg12054s_sc3g12_c"]][resp[["icg12054s_sc3g12_c"]] == 4] <- 2
         #31
         resp[["icg12109s_sc3g12_c"]][resp[["icg12109s_sc3g12_c"]] == 1] <- 0
         resp[["icg12109s_sc3g12_c"]][resp[["icg12109s_sc3g12_c"]] == 2] <- 1
         resp[["icg12109s_sc3g12_c"]][resp[["icg12109s_sc3g12_c"]] == 3] <- 2
         resp[["icg12109s_sc3g12_c"]][resp[["icg12109s_sc3g12_c"]] == 4] <- 3
         #32
-        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] %in% 1:2] <- 0
-        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 3] <- 1
-        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 4] <- 2
-        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 5] <- 3
+        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 1] <- 0
+        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 2] <- 1
+        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 3] <- 2
+        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 4] <- 3
+        resp[["icg12119s_sc3g12_c"]][resp[["icg12119s_sc3g12_c"]] == 5] <- 4
       }
     } else if (domain == "EF") {
       if (wave == "w7") {
@@ -920,29 +925,29 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 2] <- 1
         # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 3] <- 2
         # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 4] <- 3
-        #1
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 1] <- 0
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 2] <- 1#0
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 3] <- 2#1
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 4] <- 3#2
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 5] <- 4#3
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 6] <- 5#4
-        resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 7] <- 6#5
-        #2
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 1] <- 0
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 2] <- 1
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 3] <- 2#1
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 4] <- 3#2
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 5] <- 4#3
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 6] <- 5#4
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 7] <- 6#5
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 8] <- 7#6
-        resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 9] <- 8#7
-        #3
-        resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 1] <- 0
-        resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 2] <- 1
-        resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 3] <- 2
-        resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 4] <- 3
+        # #1 # apparently already collapsed by SUF V.11.0.0
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 1] <- 0
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 2] <- 1#0
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 3] <- 2#1
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 4] <- 3#2
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 5] <- 4#3
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 6] <- 5#4
+        # resp[["efg10022s_sc3g12_c"]][resp[["efg10022s_sc3g12_c"]] == 7] <- 6#5
+        # #2
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 1] <- 0
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 2] <- 1
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 3] <- 2#1
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 4] <- 3#2
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 5] <- 4#3
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 6] <- 5#4
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 7] <- 6#5
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 8] <- 7#6
+        # resp[["efg12b00s_sc3g12_c"]][resp[["efg12b00s_sc3g12_c"]] == 9] <- 8#7
+        # #3
+        # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 1] <- 0
+        # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 2] <- 1
+        # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 3] <- 2
+        # resp[["efg10108s_sc3g12_c"]][resp[["efg10108s_sc3g12_c"]] == 4] <- 3
       }
     } else if (domain == "ST") {
       resp[["stg12nhs_sc3g12_c"]][resp[["stg12nhs_sc3g12_c"]] == 1] <- 0
@@ -1201,12 +1206,13 @@ collapse_categories_pcm <- function(resp, SC, wave, domain) {
         resp[["mag4d14s_c"]][resp[["mag4d14s_c"]] == 4] <- 0
         resp[["mag4d14s_c"]][resp[["mag4d14s_c"]] == 5] <- 1
       } else if (wave == "w9") {
-        # TODO: without TR!!!
         resp[["mag7d06s_c"]][resp[["mag7d06s_c"]] %in% c(1, 2, 3)] <- 0
-        resp[["mag7d06s_c"]][resp[["mag7d06s_c"]] %in% c(4, 5)] <- 1
+        resp[["mag7d06s_c"]][resp[["mag7d06s_c"]] == 4] <- 1
+        resp[["mag7d06s_c"]][resp[["mag7d06s_c"]] == 5] <- 2
 
-        resp[["mag7r02s_sc2g7_c"]][resp[["mag7r02s_sc2g7_c"]] %in% c(1, 2)] <- 0
-        resp[["mag7r02s_sc2g7_c"]][resp[["mag7r02s_sc2g7_c"]] == 3] <- 1
+        resp[["mag7r02s_sc2g7_c"]][resp[["mag7r02s_sc2g7_c"]] == 1] <- 0
+        resp[["mag7r02s_sc2g7_c"]][resp[["mag7r02s_sc2g7_c"]] == 2] <- 1
+        resp[["mag7r02s_sc2g7_c"]][resp[["mag7r02s_sc2g7_c"]] == 3] <- 2
       }
     }
   } else if (SC == "SC1") {

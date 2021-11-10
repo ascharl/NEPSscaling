@@ -14,12 +14,19 @@
 calculate_standardized_regr_coeff <- function(regr.coeff, datalist,
                                               longitudinal, waves, variance) {
   used_imp <- determine_used_imputations(datalist)
-
-  sdX <- lapply(datalist, function(dat) {
-    apply(
-      model.matrix(~., dat[, !grepl("ID_t|PV", names(dat)), drop = FALSE])[, -1],
-      2, sd, na.rm = TRUE)
-  })
+  
+  if (ncol(datalist[[1]]) <= 3) {
+    sdX <- lapply(datalist, function(dat) {
+      sd(model.matrix(~., dat[!grepl("ID_t|PV", names(dat))])[, -1], 
+         na.rm = TRUE)
+    })
+  } else {
+    sdX <- lapply(datalist, function(dat) {
+      apply(
+        model.matrix(~., dat[, !grepl("ID_t|PV", names(dat))])[, -1],
+        2, sd, na.rm = TRUE)
+    })
+  }
 
   if (longitudinal) {
     regr_coeff_std <- replicate(length(regr.coeff),
@@ -56,18 +63,19 @@ calculate_standardized_regr_coeff <- function(regr.coeff, datalist,
     tmp_datalist <- datalist[grepl(u, names(datalist))][1]
     tmp_coeff <- regr.coeff[, grepl(u, names(regr.coeff))]
     tmp_coeff <- tibble::add_column(
+      tmp_coeff, Variable = regr.coeff$Variable, .before = 1
+    )
+    tmp_coeff <- tibble::add_column(
       tmp_coeff,
       x = c(NA, standardized_coeff(
-        tmp_coeff[-1, 1],
+        tmp_coeff[-1, 2],
         sdX[[names(tmp_datalist)]],
         sqrt(variance[which(used_imp[[2]] == u)]))),
       .after = paste0(u, "_coeff")
     )
-    names(tmp_coeff) <- paste0(u, c("_coeff", "_coeff_std", "_se"))
-    rownames(tmp_coeff) <- regr.coeff$Variable
-    regr_coeff_std <- dplyr::left_join(regr_coeff_std,
-                                       tmp_coeff %>% tibble::rownames_to_column(),
-                                       by = c("Variable" = "rowname"))
+    names(tmp_coeff) <- c("Variable", paste0(u, c("_coeff", "_coeff_std", "_se")))
+    regr_coeff_std <- merge(regr_coeff_std, tmp_coeff,
+                            by = "Variable", all = TRUE)
   }
   regr_coeff_std
 }

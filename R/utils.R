@@ -76,11 +76,12 @@ extract_bgdata_variables <- function(bgdatacom, exclude, waves, j) {
     if (any(excl)) {
       return(bgdatacom[, !excl, drop = FALSE])
     }
-  }
-  if (gsub("_", "", waves[j]) %in% names(exclude)) {
-    excl <- names(bgdatacom) %in% exclude[[gsub("_", "", waves[j])]]
-    if (any(excl)) {
-      return(bgdatacom[, !excl, drop = FALSE])
+  } else {
+    if (gsub("_", "", waves[j]) %in% names(exclude)) {
+      excl <- names(bgdatacom) %in% exclude[[gsub("_", "", waves[j])]]
+      if (any(excl)) {
+        return(bgdatacom[, !excl, drop = FALSE])
+      }
     }
   }
   bgdatacom

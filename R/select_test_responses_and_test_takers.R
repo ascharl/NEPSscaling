@@ -19,7 +19,7 @@ select_test_responses_and_test_takers <- function(longitudinal, SC, domain,
       resp <- select_longitudinal_sc6_reading(data, SC, domain, min_valid)
     } else {
       resp <- list()
-      for (i in seq(length(item_labels[[SC]][[domain]]))) {
+      for (i in seq(length(item_labels[[domain]][[SC]]))) {
         resp[[i]] <- select_data(data, SC, domain, wave = i, min_valid)
         if (SC %in% c("SC3", "SC4") & domain == "EF") {
           resp[[i]] <- impute_english_competence_data(resp[[i]], SC, wave = i)
@@ -64,7 +64,7 @@ select_test_responses_and_test_takers <- function(longitudinal, SC, domain,
 #' are returned
 #' @noRd
 select_data <- function(data, SC, domain, wave, min_valid) {
-  resp <- data[, c("ID_t", item_labels[[SC]][[domain]][[wave]])]
+  resp <- data[, c("ID_t", item_labels[[domain]][[SC]][[wave]])]
   resp <- resp[rowSums(!is.na(resp[, -1])) >= min_valid, ]
   resp <- resp[order(resp[["ID_t"]]), ]
   resp

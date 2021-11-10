@@ -6,7 +6,7 @@ shinyUI(
       "font-size-base" = "1.5rem",
       base_font = bslib::font_google("Open Sans"),
       code_font = bslib::font_google("Open Sans")
-    ), 
+    ),
       tabPanel(
       fluidRow(
       column(2, offset = 1, img(height = 50, width = 100, src = "NEPSscaling_Logo_3.png")))
@@ -28,6 +28,10 @@ shinyUI(
              word-wrap: break-word;
              white-space: normal;
           }
+          .btn-block:hover {
+             color: #E8E6F4;
+             background-color: #24195D;
+          }
           .btn-group-container-sw {
              display: flex;
           }
@@ -35,6 +39,11 @@ shinyUI(
              margin-top: 30px;
              margin-bottom: 30px;
              flex: 1;
+             color: #E8E6F4;
+             background-color: #24195D;
+          }
+          .radiobtn:hover {
+             color: #E8E6F4;
              background-color: #24195D;
           }"
           )
@@ -59,34 +68,36 @@ shinyUI(
                         multiple = FALSE, accept = c(".rds", ".sav", ".dta")),
               tags$span(style = "font-size: 0.75em;",
                         "Upload size up to 30MB. Accepts '.rds', '.sav', and '.dta' formats."),
-              
+
               hr(),
-              
+
               actionButton(inputId = "remove_bgdata",
                            label = "Remove background data"),
-              
+
               hr(),
-              
+
               actionButton(inputId = "Display_Bgdata",
                            label = "Inspect background data"),
+              tags$span(style = "font-size: 0.75em;",
+                        "The changes affect the display of the background data only."),
               shinyjs::hidden(
                 selectInput("bgdata_select_cols", "Select columns", choices = "",
                             multiple = TRUE),
-                textInput("bgdata_filter_rows", "Filter"),
+                textInput("bgdata_filter_rows", "Filter", placeholder = "e.g., var1 == 1"),
                 selectInput("bgdata_sort_cases", "Sort by", choices = ""),
                 shinyWidgets::prettyCheckbox(
                   inputId = "bgdata_ascending", label = "Ascending",
                   status = "primary", value = TRUE, shape = "curve", outline = TRUE
                 )
               ),
-              
+
               circle = FALSE, status = "block",
               width = "100%",
               label = "Manage background data"
             ),
             hr(),
             shinyWidgets::dropdownButton(
-              
+
               tags$strong("Download pv_obj"),
               textInput(
                 "pv_obj_name", label = "Choose file name",
@@ -108,11 +119,11 @@ shinyUI(
                       multiple = FALSE, accept = ".rds"),
             tags$span(style = "font-size: 0.75em;",
                       "Upload size up to 30MB. Accepts '.rds' format."),
-            
+
             hr(),
-            
+
             actionButton(inputId = "remove_pv_obj", label =  "Remove pv_obj")),
-            
+
             hr(),
             shinyWidgets::dropdownButton(
               inputId = "scale_level",
@@ -215,20 +226,20 @@ shinyUI(
                            value = sample(0:100000, 1),
                            min = 0),
               selectInput(inputId = "exclude1", label = "Variables to exclude from bg data",
-                          choices = ""),
+                          choices = "", multiple = TRUE),
               shinyjs::hidden(
                 selectInput(inputId = "exclude2",
                             label = "Variables to exclude (2nd wave)",
-                            choices = ""),
+                            choices = "", multiple = TRUE),
                 selectInput(inputId = "exclude3",
                             label = "Variables to exclude (3rd wave)",
-                            choices = ""),
+                            choices = "", multiple = TRUE),
                 selectInput(inputId = "exclude4",
                             label = "Variables to exclude (4th wave)",
-                            choices = ""),
+                            choices = "", multiple = TRUE),
                 selectInput(inputId = "exclude5",
                             label = "Variables to exclude (5th wave)",
-                            choices = "")
+                            choices = "", multiple = TRUE)
               ),
 
               circle = FALSE, status = "block",
@@ -286,11 +297,12 @@ shinyUI(
             hr(),
             shinyWidgets::dropdownButton(
               inputId = "plots_variable_importance",
-              selectInput(inputId = "imputation", label = "Select imputation",
-                          choices = ""),
-              selectInput(inputId = "variable", label = "Select variable",
-                          choices = ""),
-              actionButton(inputId = "variable_importance_plot", label = "Display variable importance plot"),
+              selectInput(inputId = "imputation_var_imp",
+                          label = "Select imputation", choices = ""),
+              selectInput(inputId = "variable_var_imp",
+                          label = "Select variable", choices = ""),
+              actionButton(inputId = "variable_importance_plot",
+                           label = "Display variable importance plot"),
 
               circle = FALSE, status = "block",
               width = "100%",
@@ -404,12 +416,12 @@ shinyUI(
     ## ------------------------------Header-----------------------------------------------------------------
       navbarMenu(
         tags$i(class = "far fa-question-circle", style="font-size: 36px"),
-      tabPanel("NEPSscaling", 
+      tabPanel("NEPSscaling",
                fluidRow(
-                 column(12, 
+                 column(12,
                         tags$dl(
-                          tags$dt("The NEPSscaling package"), 
-                          tags$dd( 
+                          tags$dt("The NEPSscaling package"),
+                          tags$dd(
                             tags$ul(
                               tags$li("Helps NEPS data users to estimate plausible values for the major competence domains"),
                               tags$li("The estimation by plausible_values() is based on the psychometric results described in the respective technical reports of the substudies."),
@@ -418,16 +430,16 @@ shinyUI(
                             ))
                         )
                  )),
-      tabPanel("Citation", 
+      tabPanel("Citation",
         fluidRow(
-          column(8, 
+          column(8,
                  tags$dl(
-                   tags$dt("Citing the NEPSscaling package"), 
-                   tags$dd("Scharl, A., Carstensen, C. H., & Gnambs, T. (2020). Estimating Plausible Values with NEPS Data: An Example Using Reading Competence in Starting Cohort 6. NEPS Survey Papers. https://doi.org/10.5157/NEPS:SP71:1.0" 
+                   tags$dt("Citing the NEPSscaling package"),
+                   tags$dd("Scharl, A., Carstensen, C. H., & Gnambs, T. (2020). Estimating Plausible Values with NEPS Data: An Example Using Reading Competence in Starting Cohort 6. NEPS Survey Papers. https://doi.org/10.5157/NEPS:SP71:1.0"
                      )
                  )
         ))),
-      
+
       tabPanel(
         "Contact",
         fluidRow(
@@ -512,7 +524,7 @@ shinyUI(
         )
       )),
  tabPanel(
-        column(1, offset = 1, img(height = 40, width = 90, src = "NEPS_reduziert_RGB_v01.png")), 
+        column(1, offset = 1, img(height = 40, width = 90, src = "NEPS_reduziert_RGB_v01.png")),
         tabPanel("National Educational Panel Study",
                  fluidRow(
                    column(12,
@@ -520,15 +532,15 @@ shinyUI(
                             tags$dt("For information about the NEPS, visit the website"),
                             tags$dd(
                               tags$ul(
-                                tags$a(href="https://www.neps-data.de/", 
+                                tags$a(href="https://www.neps-data.de/",
                                        "German"),
-                                tags$a(href="https://www.neps-data.de/Mainpage", 
+                                tags$a(href="https://www.neps-data.de/Mainpage",
                                        "English")
                                 )))))
-                 ) 
-     ), 
+                 )
+     ),
  tabPanel(
-   fluidRow(column(1, offset = 5, img(height = 40, width = 45, src = "LIfBi_Logo_solo_RZ.png"))), 
+   fluidRow(column(1, offset = 5, img(height = 40, width = 45, src = "LIfBi_Logo_solo_RZ.png"))),
    tabPanel("Leibnitz Institute for Educational Trajectories",
             fluidRow(
               column(12,
@@ -536,16 +548,16 @@ shinyUI(
                        tags$dt("For information about the LIfBi, visit the website"),
                        tags$dd(
                          tags$ul(
-                           tags$a(href="https://www.lifbi.de/", 
+                           tags$a(href="https://www.lifbi.de/",
                                   "German"),
-                           tags$a(href="https://www.lifbi.de/LIfBi-Home", 
+                           tags$a(href="https://www.lifbi.de/LIfBi-Home",
                                   "English")
-                           
+
                          )
                          )))))
    )  ))
-     
-   
- 
-  
+
+
+
+
 

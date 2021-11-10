@@ -82,6 +82,12 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, inputId = "variable",
                       choices = names(out$treeplot[[1]]),
                       selected = "")
+    updateSelectInput(session, inputId = "imputation_var_imp",
+                      choices = names(out$treeplot),
+                      selected = "")
+    updateSelectInput(session, inputId = "variable_var_imp",
+                      choices = names(out$treeplot[[1]]),
+                      selected = "")
     updateSelectInput(session, inputId = "fill",
                       choices = unique(c(input$nominal, input$ordinal)),
                       selected = "")
@@ -127,7 +133,7 @@ shinyServer(function(input, output, session) {
                       label = "Sort by", choices = names(out),
                       selected = "")
 
-    values$bgdata_raw <- out
+    values$bgdata_raw <- haven::zap_labels(out)
   })
 
   observe({
@@ -193,7 +199,7 @@ shinyServer(function(input, output, session) {
     out <- values$bgdata
 
     if (isTruthy(input$bgdata_select_cols)) { # variables for selection have been chosen
-      sel <- names(out)[names(out) %in% input$bgdata_select_cols]
+      sel <- names(out)[names(out) %in% c("ID_t", input$bgdata_select_cols)]
       out <- out[, sel, drop = FALSE]
     }
 
@@ -214,6 +220,11 @@ shinyServer(function(input, output, session) {
         out <- dplyr::arrange(out, dplyr::desc(.data[[input$bgdata_sort_cases]]))
       }
     }
+
+    updateSelectInput(session = session, inputId = "bgdata_sort_cases",
+                      label = "Sort by", choices = names(out),
+                      selected = "")
+
     out
   })
   output$bgdata_display <- renderDataTable(
@@ -230,6 +241,7 @@ shinyServer(function(input, output, session) {
       input$select_wave, input$path_to_data
     )
 
+    exclude <- NULL
     if (isTruthy(input$longitudinal) & input$longitudinal) {
       exclude <- list(
         input$exclude1, input$exclude2, input$exclude3, input$exclude4,
@@ -281,6 +293,12 @@ shinyServer(function(input, output, session) {
                       choices = names(out$treeplot),
                       selected = "")
     updateSelectInput(session, inputId = "variable",
+                      choices = names(out$treeplot[[1]]),
+                      selected = "")
+    updateSelectInput(session, inputId = "imputation_var_imp",
+                      choices = names(out$treeplot),
+                      selected = "")
+    updateSelectInput(session, inputId = "variable_var_imp",
                       choices = names(out$treeplot[[1]]),
                       selected = "")
     updateSelectInput(session, inputId = "fill",
@@ -373,7 +391,7 @@ shinyServer(function(input, output, session) {
     out <- average_pvs()
 
     if (isTruthy(input$imputations_select_cols)) { # variables for selection have been chosen
-      sel <- names(out)[names(out) %in% input$imputations_select_cols]
+      sel <- names(out)[names(out) %in% c("ID_t", input$imputations_select_cols)]
       out <- out[, sel, drop = FALSE]
     }
 
@@ -394,6 +412,11 @@ shinyServer(function(input, output, session) {
         out <- dplyr::arrange(out, dplyr::desc(.data[[input$imputations_sort_cases]]))
       }
     }
+
+    updateSelectInput(session = session, inputId = "imputations_sort_cases",
+                      label = "Sort by", choices = names(out),
+                      selected = "")
+
     out
   })
   output$imputations_display <- renderDataTable(
@@ -417,8 +440,10 @@ shinyServer(function(input, output, session) {
   # ------------------- CREATE VARIABLE IMPORTANCE PLOT ----------------------
 
   variable_importance_plot <- eventReactive(input$variable_importance_plot, {
-    req(values$pv_obj, input$imputation, input$variable)
-    NEPSscaling::display_variable_importance(values$pv_obj, input$imputation, input$variable)
+    req(values$pv_obj, input$imputation_var_imp, input$variable_var_imp)
+    NEPSscaling::display_variable_importance(values$pv_obj,
+                                             input$imputation_var_imp,
+                                             input$variable_var_imp)
   })
   output$variable_importance_plot <- renderPlot(variable_importance_plot())
 
@@ -513,9 +538,9 @@ shinyServer(function(input, output, session) {
       tab <- data.frame(
         Variable = tmp$Variable,
         N = as.character(NEPSscaling::get_n_testtakers(values$pv_obj)),
-        b = rowMeans(tmp[, grepl("_coeff$", names(tmp))]),
-        beta = rowMeans(tmp[, grepl("_std$", names(tmp))]),
-        se = rowMeans(tmp[, grepl("_se$", names(tmp))])
+        b = rowMeans(as.matrix(tmp[, grepl("_coeff$", names(tmp))])),
+        beta = rowMeans(as.matrix(tmp[, grepl("_std$", names(tmp))])),
+        se = rowMeans(as.matrix(tmp[, grepl("_se$", names(tmp))]))
       )
     }
     tab[["95% CI of b"]] <- paste0("[", round(tab$b - 1.96 * tab$se, 3),"; ",
@@ -555,6 +580,12 @@ shinyServer(function(input, output, session) {
                       choices = "",
                       selected = "")
     updateSelectInput(session, inputId = "variable",
+                      choices = "",
+                      selected = "")
+    updateSelectInput(session, inputId = "imputation_var_imp",
+                      choices = "",
+                      selected = "")
+    updateSelectInput(session, inputId = "variable_var_imp",
                       choices = "",
                       selected = "")
     updateSelectInput(session, inputId = "fill",
@@ -837,17 +868,27 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$select_starting_cohort, {
     values$domains_for_sc <-  if (input$select_starting_cohort == 1) {
-      c("MA", "CD", "SC")#, "VO")
+      c("Mathematics" = "MA", "Cognitive Development" = "CD",
+        "Science" = "SC")#, "Vocabulary" = "VO")
     } else if (input$select_starting_cohort == 2) {
-      c("MA", "RE", "SC", "IC", "NR", "NT", "ORA", "ORB", "VO", "GR")
+      c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+        "Native Russian" = "NR", "Native Turkish" = "NT",
+        "Orthography A" = "ORA", "Orthography B" = "ORB", "Vocabulatry" = "VO",
+        "Grammar" = "GR")
     } else if (input$select_starting_cohort == 3) {
-      c("MA", "RE", "SC", "IC", "EF", "NR", "NT", "ST", "ORA", "ORB", "LI")
+      c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+        "English as a foreign language" = "EF", "Native Russian" = "NR",
+        "Native Turkish" = "NT", "Scientific Thinking" = "ST",
+        "Orthography A" = "ORA", "Orthography B" = "ORB", "Listening" = "LI")
     } else if (input$select_starting_cohort == 4) {
-      c("MA", "RE", "SC", "IC", "EF", "NR", "NT", "ST")
+      c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+        "English as a foreign language" = "EF", "Native Russian" = "NR",
+        "Native Turkish" = "NT", "Scientific Thinking" = "ST")
     } else if (input$select_starting_cohort == 5) {
-      c("MA", "RE", "SC", "IC", "EF", "BA")
+      c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+        "English as a foreign language" = "EF", "Business Administration" = "BA")
     } else if (input$select_starting_cohort == 6) {
-      c("MA", "RE", "SC", "IC")
+      c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC")
     }
   })
 
