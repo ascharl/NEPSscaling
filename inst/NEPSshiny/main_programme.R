@@ -5,6 +5,10 @@ library(xtable)
 source("module_background_data.R")
 source("module_PV_obj.R")
 source("module_Plausible_Values.R")
+source("module_distribution_plots.R")
+source("module_imputation_plot.R")
+source("module_variable_importance_plot.R")
+source("module_tables.R")
 
 ui <- shinyUI(
   navbarPage(id = "navbar",
@@ -60,12 +64,20 @@ ui <- shinyUI(
           shinyjs::useShinyjs(),
   tabPanel(background_dataUI("one")),
   tabPanel(PV_objUI("two")),
-  tabPanel(Plausible_ValuesUI("three"))))
+  tabPanel(Plausible_ValuesUI("three")),
+  tabPanel(distribution_plotsUI("four")),
+  tabPanel(imputation_plotUI("five")),
+  tabPanel(variable_importance_plotUI("six")),
+  tabPanel(tablesUI("seven"))))
 
 server <- function(input, output){
   callModule(background_data, "one")
   callModule(PV_obj, "two")
   callModule(Plausible_Values, "three")
+  callModule(distribution_plots, "four")
+  callModule(imputation_plot, "five")
+  callModule(variable_importance_plot, "six")
+  callModule(tables, "seven")
 }
 
 shinyApp(ui, server)

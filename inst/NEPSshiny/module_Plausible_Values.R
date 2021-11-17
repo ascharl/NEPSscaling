@@ -218,5 +218,96 @@ observeEvent(input$estimate_pv_obj, {
                     selected = "")
 
     })
+
+    observeEvent(input$longitudinal, {
+      shinyjs::toggle('exclude2', condition = input$longitudinal)
+      shinyjs::toggle('exclude3', condition = input$longitudinal)
+      shinyjs::toggle('exclude4', condition = input$longitudinal)
+      shinyjs::toggle('exclude5', condition = input$longitudinal)
+    })
+
+    observeEvent(input$select_starting_cohort, {
+      values$domains_for_sc <-  if (input$select_starting_cohort == 1) {
+        c("Mathematics" = "MA", "Cognitive Development" = "CD",
+          "Science" = "SC")#, "Vocabulary" = "VO")
+      } else if (input$select_starting_cohort == 2) {
+        c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+          "Native Russian" = "NR", "Native Turkish" = "NT",
+          "Orthography A" = "ORA", "Orthography B" = "ORB", "Vocabulatry" = "VO",
+          "Grammar" = "GR")
+      } else if (input$select_starting_cohort == 3) {
+        c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+          "English as a foreign language" = "EF", "Native Russian" = "NR",
+          "Native Turkish" = "NT", "Scientific Thinking" = "ST",
+          "Orthography A" = "ORA", "Orthography B" = "ORB", "Listening" = "LI")
+      } else if (input$select_starting_cohort == 4) {
+        c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+          "English as a foreign language" = "EF", "Native Russian" = "NR",
+          "Native Turkish" = "NT", "Scientific Thinking" = "ST")
+      } else if (input$select_starting_cohort == 5) {
+        c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC",
+          "English as a foreign language" = "EF", "Business Administration" = "BA")
+      } else if (input$select_starting_cohort == 6) {
+        c("Mathematics" = "MA", "Reading" = "RE", "Science" = "SC", "ICT" = "IC")
+      }
+    })
+
+    observeEvent(c(input$select_starting_cohort, input$select_domain), {
+      values$waves_for_domain_and_sc <- if (input$select_starting_cohort == 1) {
+        if (input$select_domain == "MA") {c(5, 7)#, 9)
+        } else if (input$select_domain == "SC") {c(6, 8)
+        } else if (input$select_domain == "CD") {c(1)
+          #      } else if (domain == "VO") {c(4, 6, 8)
+        }
+      } else if (input$select_starting_cohort == 2) {
+        if (input$select_domain == "RE") {c(6, 9)
+        } else if (input$select_domain == "MA") {c(2, 3, 4, 6, 9)
+        } else if (input$select_domain == "SC") {c(1, 3, 5, 9)
+        } else if (input$select_domain %in% c("NR", "NT")) {c(4)
+        } else if (input$select_domain == "IC") {c(5)
+        } else if (input$select_domain == "VO") {c(1, 3, 5) # wles not yet in suf!
+        } else if (input$select_domain %in% c("ORA", "ORB")) {c(6)
+        } else if (input$select_domain == "GR") {c(3)# c(1, 3)
+        }
+      } else if (input$select_starting_cohort == 3) {
+        if (input$select_domain == "RE") {c(1, 3, 6, 9)
+        } else if (input$select_domain == "MA") {c(1, 3, 5, 9)
+        } else if (input$select_domain == "SC") {c(2, 5, 8)
+        } else if (input$select_domain %in% c("NR", "NT")) {c(3, 6)
+        } else if (input$select_domain == "IC") {c(2, 5, 9)
+        } else if (input$select_domain == "EF") {c(7, 9)
+        } else if (input$select_domain %in% c("ORA", "ORB")) {c(1, 3, 5)
+        } else if (input$select_domain == "ST") {9
+        } else if (input$select_domain == "LI") {6}
+      } else if (input$select_starting_cohort == 4) {
+        if (input$select_domain == "RE") {c(2, 7, 10)
+        } else if (input$select_domain == "MA") {c(1, 7, 10)
+        } else if (input$select_domain == "SC") {c(1, 5)
+        } else if (input$select_domain %in% c("NR", "NT")) {2
+        } else if (input$select_domain == "IC") {c(1, 7)
+        } else if (input$select_domain == "EF") {c(3, 7)
+        } else if (input$select_domain == "ST") {7}
+      } else if (input$select_starting_cohort == 5) {
+        if (input$select_domain %in% c("MA", "RE")) {c(1, 12)
+        } else if (input$select_domain %in% c("SC", "IC")) {5
+        } else if (input$select_domain == "BA") {7
+        } else if (input$select_domain == "EF") {12}
+      } else if (input$select_starting_cohort == 6) {
+        if (input$select_domain == "RE") {c(3, 5, 9)
+        } else if (input$select_domain == "MA") {c(3, 9)
+        } else if (input$select_domain %in% c("SC", "IC")) {5}
+      }
+    })
+
+    observe({
+      updateSelectInput(session = session, inputId = "select_domain",
+                        choices = values$domains_for_sc)
+    })
+
+    observe({
+      updateSelectInput(session = session, inputId = "select_wave",
+                        choices = values$waves_for_domain_and_sc)
+    })
+
   })
 }
