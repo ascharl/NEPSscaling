@@ -12,7 +12,7 @@ complement_control_lists <- function(c_E, c_W, c_T) {
 
   # default values
   control_ML <- list(
-    nmi = 10L, ntheta = 2000,
+    ntheta = 2000,
     normal.approx = FALSE,
     samp.regr = FALSE,
     theta.model = FALSE,

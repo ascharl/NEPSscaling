@@ -3,13 +3,15 @@
 #' @param bgdata data.frame of background data (incl. ID_t) or NULL
 #' @param verbose logical; whether stuff should be printed to the console
 #' @param control list of arguments for mice algorithm
+#' @param nmi numeric; denotes the number of multiple imputations for missing
+#' covariate data (defaults to 10).
 #'
 #' @return list containing the imputations, the formula for the latent regression,
 #' the incomplete background data, the list of imputation tree plots, the list
 #' of variable importance statistics
 #' @noRd
 
-impute_missing_data <- function(bgdata, verbose, control) {
+impute_missing_data <- function(bgdata, verbose, control, nmi) {
   imp <- frmY <- treeplot <- variable_importance <- NULL
   if (!is.null(bgdata)) {
     if (any(is.na(bgdata))) {
@@ -21,7 +23,7 @@ impute_missing_data <- function(bgdata, verbose, control) {
         flush.console()
       }
       res <- CART(X = bgdata, minbucket = control$ML$minbucket,
-                  cp = control$ML$cp, nmi = control$ML$nmi, verbose = verbose)
+                  cp = control$ML$cp, nmi = nmi, verbose = verbose)
       imp <- res$imp
       treeplot <- res$treeplot
       variable_importance <- res$variable_importance
@@ -58,7 +60,7 @@ impute_missing_data <- function(bgdata, verbose, control) {
 #'       predictorMatrix <- matrix(1, ncol = ncol(bgdata), nrow = ncol(bgdata))
 #'       diag(predictorMatrix) <- 0
 #'       predictorMatrix[, which(names(bgdata) == "ID_t")] <- 0
-#'       imp <- mice(data = bgdata, m = control$ML$nmi, method = "cart",
+#'       imp <- mice(data = bgdata, m = nmi, method = "cart",
 #'                   minbucket = control$ML$minbucket, cp = control$ML$cp,
 #'                   printFlag = verbose, predictorMatrix = predictorMatrix)
 #'       loggedEvents <- imp$loggedEvents

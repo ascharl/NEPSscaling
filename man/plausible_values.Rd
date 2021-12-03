@@ -13,6 +13,7 @@ plausible_values(
   path,
   bgdata = NULL,
   npv = 10L,
+  nmi = 10L,
   longitudinal = FALSE,
   rotation = TRUE,
   min_valid = 3L,
@@ -21,9 +22,9 @@ plausible_values(
   adjust_school_context = TRUE,
   exclude = NULL,
   seed = NULL,
-  control = list(EAP = FALSE, WLE = FALSE, ML = list(nmi = 10L, ntheta = 2000,
-    normal.approx = FALSE, samp.regr = FALSE, theta.model = FALSE, np.adj = 8, na.grid =
-    5, minbucket = 5, cp = 1e-04))
+  control = list(EAP = FALSE, WLE = FALSE, ML = list(ntheta = 2000, normal.approx =
+    FALSE, samp.regr = FALSE, theta.model = FALSE, np.adj = 8, na.grid = 5, minbucket =
+    5, cp = 1e-04))
 )
 }
 \arguments{
@@ -47,6 +48,9 @@ covariates is imputed using sequential classification and regression trees.}
 
 \item{npv}{numeric; number of plausible values to be estimated; defaults to
 10.}
+
+\item{nmi}{numeric; denotes the number of multiple imputations for missing
+covariate data (defaults to 10).}
 
 \item{longitudinal}{logical. TRUE indicating that a unidimensional model
 per measurement points is to be estimated and subsequently linked to form
@@ -85,11 +89,9 @@ estimation}
 \item{control}{list of additional options. If \code{EAP = TRUE}, the EAPs
 will be returned as well; for \code{WLE = TRUE} WLEs are returned.
 Furthermore, additional control options for are collected in the list `ML`.
-`nmi` denotes the number of multiple impuations for missing covariate data
-(defaults to 10). `minbucket` defines the minimum number of
-observations in any terminal CART node (defaults to 5), `cp`
-determines the minimum decrease of overall lack of fit by each CART split
-(defaults to 0.0001).}
+`minbucket` defines the minimum number of observations in any terminal CART
+node (defaults to 5), `cp` determines the minimum decrease of overall lack of
+fit by each CART split (defaults to 0.0001).}
 }
 \value{
 \code{plausible_values()} returns an object of class \code{pv_obj}

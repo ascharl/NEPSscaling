@@ -1,3 +1,12 @@
+# NOTE: If I have understood
+# https://tbradley1013.github.io/2018/07/20/r-shiny-modules--using-global-inputs/
+# and
+# https://stackoverflow.com/questions/45169876/observeevent-shiny-function-used-in-a-module-does-not-work
+# correctly, the "values" reactive values list has to be passed to the
+# server modules as an extra argument. Otherwise it should be fine to use it
+# as is already done in the "old" server.
+
+
 
 library(shiny)
 library(xtable)

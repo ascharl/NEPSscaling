@@ -1,4 +1,4 @@
-# Module PV_obj
+# Module sidebar PV_obj
 # uploads already existing PV_obj or downloads the created PV_obj used to estimate plausible values
 
 #' @param upload, download and remove background data
@@ -8,13 +8,9 @@
 ## UI
 ##########################################################################################################################################
 
-PV_objUI <- function(id){
+PV_obj_sidebarUI <- function(id){
   ns <- NS(id)
-  tagList(
-  sidebarLayout(
-    sidebarPanel(
-      hr(),
-      shinyWidgets::dropdownButton(
+     shinyWidgets::dropdownButton(
 
         tags$strong("Download pv_obj"),
         textInput(ns("pv_obj_name"), label = "Choose file name",
@@ -39,10 +35,8 @@ PV_objUI <- function(id){
 
         hr(),
 
-        actionButton(inputId = ns("remove_pv_obj"), label =  "Remove pv_obj"))),
-  mainPanel(tabsetPanel(
-    tabPanel("Estimate Plausible Values", value = 2,
-           h3(textOutput("plausible_values_progress")))))))
+        actionButton(inputId = ns("remove_pv_obj"), label =  "Remove pv_obj"))
+
 }
 
 ##########################################################################################################################################

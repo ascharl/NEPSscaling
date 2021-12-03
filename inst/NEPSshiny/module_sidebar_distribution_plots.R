@@ -7,12 +7,9 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-distribution_plotsUI <- function(id){
+distribution_plots_sidebarUI <- function(id){
   ns <- NS(id)
-  tagList(
-    sidebarLayout(
-      sidebarPanel(
-        conditionalPanel(
+          conditionalPanel(
           condition = "input.conditionedPanels==3", ns=ns,
           shinyWidgets::dropdownButton(
             inputId = ns("plots_distribution_plot"),
@@ -35,31 +32,13 @@ distribution_plotsUI <- function(id){
             circle = FALSE, status = "block",
             width = "100%",
             label = "Plots for plausible values and imputations"
-          ))),
-      mainPanel(
-        tabsetPanel(
-          tabPanel("Plots", value = 3,
-               conditionalPanel(
-                 condition = "output.plots_conditional_visible==1",
-                 tags$h3("Distribution plots"),
-                 plotOutput(ns("plot")),
-                 textInput(ns("plot_name"), label = "Plot name",
-                           value = paste0("plot_",
-                                          gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                 selectInput(ns("plot_format"),
-                             label = "Select export format",
-                             choices = c("png", "RData")),
-                 downloadButton(outputId = ns("download_plot"),
-                                label = "Download plot")
-               ))))
-    )
-  )
+          ))
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-distribution_plotsServer <- function(id){
+distribution_plots_sidebarServer <- function(id){
   moduleServer(id,function(input, output, session){
 
 # select columns, filter by values, select rows
@@ -98,36 +77,6 @@ imputations_display <- reactive({
   out
 })
 
-output$imputations_display <- renderDataTable(
-  imputations_display(),
-  options = list(pageLength = 50)
-)
-output$download_plot <- downloadHandler(
-  filename = function() {
-    req(input$plot_name, input$plot_format)
-    ext <- switch(input$plot_format,
-                  "png" = ".png",
-                  "RData" = ".RData")
-    paste0(input$plot_name, ext)
-  },
-  content = function(file) {
-    if (input$plot_format == "RData") {
-      gplot <- imputation_plot()
-      save(gplot, file = file)
-    } else {
-      ggplot2::ggsave(filename = file, plot = imputation_plot())
-    }
-  }
-)
-
-observeEvent(input$plots_distribution_plot_state, {
-  values$plots_conditional_visible <- 1
-})
-
-output$plots_conditional_visible <- renderText({
-  values$plots_conditional_visible
-})
-outputOptions(output, "plots_conditional_visible", suspendWhenHidden = FALSE)
 
 })
 }

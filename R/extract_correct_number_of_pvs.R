@@ -1,7 +1,8 @@
 #' extract correct number of plausible values from pvs object
 #'
 #' @param bgdata data.frame or NULL; background data
-#' @param control list; contains number of multiple imputations
+#' @param nmi numeric; denotes the number of multiple imputations for missing
+#' covariate data (defaults to 10).
 #' @param npv numeric; number of plausible values
 #' @param pvs list of data.frames; contains completed bgdata and pvs
 #'
@@ -9,12 +10,10 @@
 #' imputation and which PV
 #' @noRd
 
-extract_correct_number_of_pvs <- function(bgdata, control, npv, pvs) {
+extract_correct_number_of_pvs <- function(bgdata, nmi, npv, pvs) {
   datalist <- list()
   d <- 1
-  for (i in 1:ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1,
-    control$ML$nmi
-  )) {
+  for (i in 1:ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, nmi)) {
     for (j in 1:npv) {
       datalist[[d]] <- pvs[[i]][[j]][, !grepl(
         "pweights|test_postition",

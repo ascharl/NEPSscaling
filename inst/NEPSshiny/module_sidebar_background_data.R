@@ -1,4 +1,4 @@
-# Module: Background data
+# Module: Sidebar of background data
 # manages the background data used to estimate plausible values
 
 #' @param upload,inspect and remove background data
@@ -8,13 +8,11 @@
 ## UI
 ##########################################################################################################################################
 
-background_dataUI <- function(id){
+background_data_sidebarUI <- function(id){
   ns <- NS(id)
-  tagList(
-    sidebarLayout(
-      sidebarPanel(
-        conditionalPanel(
+  conditionalPanel(
           condition = "input.conditionedPanels== 1",
+          ns=ns,
           shinyWidgets::dropdownButton(
             inputId = ns("input_bgdata"),
             fileInput(inputId = ns("import_bgdata"),
@@ -61,18 +59,12 @@ background_dataUI <- function(id){
             circle = FALSE, status = "block",
             width = "100%",
             label = "Set scale levels of background data")
-        ),
-      mainPanel(
-        tabPanel("Manage", value = 1,
-                 verbatimTextOutput(ns("summary")),
-                 dataTableOutput(ns("bgdata_display"))))
-      ))
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-Server_background_data <- function(id){
+background_data_sidebarServer <- function(id){
   moduleServer(id, function(input, output, session){
 
     filter_data <- function(filter_op, filter_var, filter_val, out) {
@@ -216,10 +208,7 @@ Server_background_data <- function(id){
       out
     })
 
-    output$bgdata_display <- renderDataTable(
-      bgdata_display(),
-      options = list(pageLength = 25)
-    )
+
 
 })
 }

@@ -16,6 +16,8 @@
 #' covariates is imputed using sequential classification and regression trees.
 #' @param npv numeric; number of plausible values to be estimated; defaults to
 #' 10.
+#' @param nmi numeric; denotes the number of multiple imputations for missing
+#' covariate data (defaults to 10).
 #' @param min_valid numeric; minimum number of valid responses for a test
 #' takers to be included in the estimation process. Defaults to 3 following NEPS
 #' scaling standards (see Pohl & Carstensen, 2012).
@@ -45,11 +47,9 @@
 #' @param control list of additional options. If \code{EAP = TRUE}, the EAPs
 #' will be returned as well; for \code{WLE = TRUE} WLEs are returned.
 #' Furthermore, additional control options for are collected in the list `ML`.
-#' `nmi` denotes the number of multiple impuations for missing covariate data
-#' (defaults to 10). `minbucket` defines the minimum number of
-#' observations in any terminal CART node (defaults to 5), `cp`
-#' determines the minimum decrease of overall lack of fit by each CART split
-#' (defaults to 0.0001).
+#' `minbucket` defines the minimum number of observations in any terminal CART
+#' node (defaults to 5), `cp` determines the minimum decrease of overall lack of
+#' fit by each CART split (defaults to 0.0001).
 #'
 #' @return \code{plausible_values()} returns an object of class \code{pv_obj}
 #' containing:
@@ -226,6 +226,7 @@ plausible_values <- function(SC,
                              path,
                              bgdata = NULL,
                              npv = 10L,
+                             nmi = 10L,
                              longitudinal = FALSE,
                              rotation = TRUE,
                              min_valid = 3L,
@@ -237,7 +238,7 @@ plausible_values <- function(SC,
                              control = list(
                                EAP = FALSE, WLE = FALSE,
                                ML = list(
-                                 nmi = 10L, ntheta = 2000,
+                                 ntheta = 2000,
                                  normal.approx = FALSE,
                                  samp.regr = FALSE,
                                  theta.model = FALSE,
@@ -437,7 +438,7 @@ plausible_values <- function(SC,
   # multiple imputation of missing covariate data -----------------------------
 
   t2 <- Sys.time()
-  res <- impute_missing_data(bgdata, verbose, control)
+  res <- impute_missing_data(bgdata, verbose, control, nmi)
   imp <- res[["imp"]]
   frmY <- res[["frmY"]]
   bgdata <- res[["bgdata"]]
@@ -455,31 +456,31 @@ plausible_values <- function(SC,
   if (longitudinal) {
     res <- estimate_longitudinal(
       bgdata, imp, frmY = frmY, resp, PCM, ID_t, waves, type, domain, SC,
-      control, npv, exclude
+      control, npv, nmi, exclude
     )
   } else {
     if (rotation) {
       if (PCM) {
         res <- estimate_cross_pcm_corrected_for_rotation(
           bgdata, imp, frmY = frmY, waves, ID_t, resp, type, domain, SC,
-          control, npv, position, exclude
+          control, npv, nmi, position, exclude
         )
       } else {
         res <- estimate_cross_rasch_corrected_for_rotation(
           bgdata, imp, frmY = frmY, resp, position, waves, ID_t, type, domain,
-          SC, control, npv, exclude
+          SC, control, npv, nmi, exclude
         )
       }
     } else {
       if (PCM) {
         res <- estimate_cross_pcm_uncorrected(
           bgdata, imp, resp, waves, frmY = frmY, ID_t, type, domain, SC,
-          control, npv, exclude
+          control, npv, nmi, exclude
         )
       } else {
         res <- estimate_cross_rasch_uncorrected(
           bgdata, imp, resp, waves, frmY = frmY, ID_t, type, domain, SC,
-          control, npv, exclude
+          control, npv, nmi, exclude
         )
       }
     }
@@ -511,7 +512,7 @@ plausible_values <- function(SC,
   }
 
   # extract correct number of plausible values from pvs object
-  datalist <- extract_correct_number_of_pvs(bgdata, control, npv, pvs)
+  datalist <- extract_correct_number_of_pvs(bgdata, nmi, npv, pvs)
 
   # keep only those regr. coefficients / EAP reliabilities of kept imputations
   res <- discard_not_used_imputations(datalist, regr.coeff, EAP.rel,
@@ -596,6 +597,7 @@ plausible_values <- function(SC,
   res[["n_testtakers"]] <-
     colSums(!is.na(valid_responses_per_person[, -1, drop = FALSE]))
   res[["npv"]] <- npv
+  res[["nmi"]] <- nmi
   if (!is.null(seed)) {
     res[["seed"]] <- seed
   }

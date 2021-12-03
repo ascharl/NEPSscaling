@@ -19,6 +19,8 @@
 #'   algorithm
 #' @param npv Integer value fo number of plausible values to be returned by
 #'   `NEPSscaling::plausible_values()`
+#' @param nmi numeric; denotes the number of multiple imputations for missing
+#' covariate data (defaults to 10).
 #' @param exclude list of vectors (named after the waves); contains
 #' variables that are NOT to be used in the background model of the specified
 #' wave
@@ -28,7 +30,7 @@
 #' @noRd
 
 estimate_longitudinal <- function(bgdata, imp, frmY = NULL, resp, PCM, ID_t,
-                                  waves, type, domain, SC, control, npv,
+                                  waves, type, domain, SC, control, npv, nmi,
                                   exclude) {
   items <- lapply(xsi.fixed$long[[domain]][[SC]], rownames)
   if (SC == "SC2" && domain == "SC") {
@@ -40,7 +42,7 @@ estimate_longitudinal <- function(bgdata, imp, frmY = NULL, resp, PCM, ID_t,
   resp <- res[["resp"]]
   Q <- res[["Q"]]
 
-  times <- ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, control$ML$nmi)
+  times <- ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, nmi)
   pvs <- EAP.rel <- info_crit <- variance <-
     replicate(times, list(), simplify = FALSE)
   regr.coeff <- replicate(

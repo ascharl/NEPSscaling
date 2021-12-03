@@ -18,6 +18,8 @@
 #'   algorithm
 #' @param npv Integer value fo number of plausible values to be returned by
 #'   `NEPScaling::plausible_values()`
+#' @param nmi numeric; denotes the number of multiple imputations for missing
+#' covariate data (defaults to 10).
 #' @param exclude list of vectors (named after the waves); contains
 #' variables that are NOT to be used in the background model of the specified
 #' wave
@@ -29,13 +31,13 @@
 estimate_cross_pcm_uncorrected <- function(bgdata, imp, resp,
                                            waves, frmY = NULL,
                                            ID_t, type, domain,
-                                           SC, control, npv, exclude) {
+                                           SC, control, npv, nmi, exclude) {
   items <- rownames(xsi.fixed$cross[[domain]][[SC]][[gsub("_", "", waves)]])
   res <- prepare_resp_b_cross(resp, items, waves, SC, domain)
   resp <- res[["resp"]]
   B <- res[["B"]]
 
-  times <- ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, control$ML$nmi)
+  times <- ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, nmi)
   pvs <- list(NULL)
   EAP.rel <- info_crit <- regr.coeff <- variance <- NULL
   eap <- replicate(times, data.frame(ID_t = ID_t$ID_t), simplify = FALSE)
