@@ -8,14 +8,14 @@
 ## UI
 ##########################################################################################################################################
 
-tablesUI <- function(seven){
-  ns <- NS(seven)
+tablesUI <- function(id){
+  ns <- NS(id)
   tagList(
     sidebarLayout(
       sidebarPanel(
         conditionalPanel(
-          condition = "input.conditionedPanels==5",
-          shinyWidgets::radioGroupButtons("checkGroup3",
+          condition = "input.conditionedPanels==5",ns=ns,
+          shinyWidgets::radioGroupButtons(ns("checkGroup3"),
                                           choices = list(
                                             "Descriptive tables for plausible values and imputations" = 1,
                                             "Descriptive tables for item parameters" = 2,
@@ -30,33 +30,33 @@ tablesUI <- function(seven){
         tabsetPanel(
           tabPanel("Tables", value = 5,
                    conditionalPanel(
-                     condition = "input.checkGroup3==1",
+                     condition = "input.checkGroup3==1",ns=ns,
                      tags$h3("Descriptive table"),
-                     tableOutput("imputation_table"),
-                     textInput("descriptive_name", label = "Table name",
+                     tableOutput(ns("imputation_table")),
+                     textInput(ns("descriptive_name"), label = "Table name",
                                value = paste0("descriptives_",
                                               gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                     downloadButton(outputId = "download_descriptive",
+                     downloadButton(outputId = ns("download_descriptive"),
                                     label = "Download Descriptives")
                    ),
                    conditionalPanel(
-                     condition = "input.checkGroup3==2",
+                     condition = "input.checkGroup3==2", ns=ns,
                      tags$h3("Item parameters"),
-                     tableOutput("item_difficulties"),
-                     textInput("difficulties_name", label = "Table name",
+                     tableOutput(ns("item_difficulties")),
+                     textInput(ns("difficulties_name"), label = "Table name",
                                value = paste0("difficulties_",
                                               gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                     downloadButton(outputId = "download_difficulties",
+                     downloadButton(outputId = ns("download_difficulties"),
                                     label = "Download table")
                    ),
                    conditionalPanel(
-                     condition = "input.checkGroup3==3",
+                     condition = "input.checkGroup3==3", ns=ns,
                      tags$h3("Regression weights"),
-                     tableOutput("regression_table"),
-                     textInput("regression_name", label = "Table name",
+                     tableOutput(ns("regression_table")),
+                     textInput(ns("regression_name"), label = "Table name",
                                value = paste0("regression_",
                                               gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                     downloadButton(outputId = "download_regression",
+                     downloadButton(outputId = ns("download_regression"),
                                     label = "Download table")                     ))
 
         )
@@ -67,8 +67,8 @@ tablesUI <- function(seven){
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-tablesServer <- function(seven){
-  moduleServer(seven,function(input, output, session){
+tablesServer <- function(id){
+  moduleServer(id,function(input, output, session){
 
     output$download_descriptive <- downloadHandler(
       filename = function() {

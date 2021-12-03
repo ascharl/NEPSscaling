@@ -7,30 +7,30 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-distribution_plotsUI <- function(four){
-  ns <- NS(four)
+distribution_plotsUI <- function(id){
+  ns <- NS(id)
   tagList(
     sidebarLayout(
       sidebarPanel(
         conditionalPanel(
-          condition = "input.conditionedPanels==3",
+          condition = "input.conditionedPanels==3", ns=ns,
           shinyWidgets::dropdownButton(
-            inputId = "plots_distribution_plot",
-            selectInput(inputId = "geom", label = "Select plot type",
+            inputId = ns("plots_distribution_plot"),
+            selectInput(inputId = ns("geom"), label = "Select plot type",
                         choices = c("Histogram", "Density plot", "Scatter plot")),
-            selectInput("x", label = "Select variable on x-axis",
+            selectInput(ns("x"), label = "Select variable on x-axis",
                         choices = ""),
-            selectInput("y", label = "Select variable on y-axis",
+            selectInput(ns("y"), label = "Select variable on y-axis",
                         choices = ""),
-            selectInput("fill", label = "Select variable for color coding",
+            selectInput(ns("fill"), label = "Select variable for color coding",
                         choices = ""),
-            textInput(inputId = "title", label = "Plot title"),
-            textInput(inputId = "xlab", label = "Label of x-axis"),
-            textInput(inputId = "ylab", label = "Label of y-axis"),
-            selectInput("theme", label = "Select plot theme",
+            textInput(inputId = ns("title"), label = "Plot title"),
+            textInput(inputId = ns("xlab"), label = "Label of x-axis"),
+            textInput(inputId = ns("ylab"), label = "Label of y-axis"),
+            selectInput(ns("theme"), label = "Select plot theme",
                         choices = c("Gray", "Black and white", "Linedraw", "Light",
                                     "Dark", "Minimal", "Classic", "Void")),
-            actionButton("plot", label = "Display plot"),
+            actionButton(ns("plot"), label = "Display plot"),
 
             circle = FALSE, status = "block",
             width = "100%",
@@ -42,14 +42,14 @@ distribution_plotsUI <- function(four){
                conditionalPanel(
                  condition = "output.plots_conditional_visible==1",
                  tags$h3("Distribution plots"),
-                 plotOutput("plot"),
-                 textInput("plot_name", label = "Plot name",
+                 plotOutput(ns("plot")),
+                 textInput(ns("plot_name"), label = "Plot name",
                            value = paste0("plot_",
                                           gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                 selectInput("plot_format",
+                 selectInput(ns("plot_format"),
                              label = "Select export format",
                              choices = c("png", "RData")),
-                 downloadButton(outputId = "download_plot",
+                 downloadButton(outputId = ns("download_plot"),
                                 label = "Download plot")
                ))))
     )
@@ -59,8 +59,8 @@ distribution_plotsUI <- function(four){
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-distribution_plotsServer <- function(four){
-  moduleServer(four,function(input, output, session){
+distribution_plotsServer <- function(id){
+  moduleServer(id,function(input, output, session){
 
 # select columns, filter by values, select rows
 # paged table

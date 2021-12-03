@@ -8,21 +8,21 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-imputation_plotUI <- function(five){
-  ns <- NS(five)
+imputation_plotUI <- function(id){
+  ns <- NS(id)
   tagList(
     sidebarLayout(
       sidebarPanel(
         conditionalPanel(
-          condition = "input.conditionedPanels==3",
+          condition = "input.conditionedPanels==3", ns=ns,
           hr(),
           shinyWidgets::dropdownButton(
-            inputId = "plots_tree_structure",
-            selectInput(inputId = "imputation", label = "Select imputation",
+            inputId = ns("plots_tree_structure"),
+            selectInput(inputId = ns("imputation"), label = "Select imputation",
                         choices = ""),
-            selectInput(inputId = "variable", label = "Select variable",
+            selectInput(inputId = ns("variable"), label = "Select variable",
                         choices = ""),
-            actionButton(inputId = "cart_plot", label = "Display tree plot"),
+            actionButton(inputId = ns("cart_plot"), label = "Display tree plot"),
 
             circle = FALSE, status = "block",
             width = "100%",
@@ -36,14 +36,14 @@ imputation_plotUI <- function(five){
                    conditionalPanel(
                      condition = 'output.plots_conditional_visible==2',
                      tags$h3("Imputation tree plots"),
-                     plotOutput("cart_plot"),
-                     textInput("cart_name", label = "Plot name",
+                     plotOutput(ns("cart_plot")),
+                     textInput(ns("cart_name"), label = "Plot name",
                                value = paste0("cart_",
                                               gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                     selectInput("cart_format",
+                     selectInput(ns("cart_format"),
                                  label = "Select export format",
                                  choices = c("png", "RData")),
-                     downloadButton(outputId = "download_cart",
+                     downloadButton(outputId = ns("download_cart"),
                                     label = "Download plot")
                    )))
       )
@@ -54,8 +54,8 @@ imputation_plotUI <- function(five){
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-imputation_plotServer <- function(five){
-  moduleServer(five,function(input, output, session){
+imputation_plotServer <- function(id){
+  moduleServer(id,function(input, output, session){
 
     cart_plot <- eventReactive(input$cart_plot, {
       req(values$pv_obj, input$imputation, input$variable)

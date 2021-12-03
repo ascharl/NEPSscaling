@@ -41,16 +41,14 @@ background_dataUI <- function(id){
               selectInput(ns("bgdata_sort_cases"), "Sort by", choices = ""),
               shinyWidgets::prettyCheckbox(
                 inputId = ns("bgdata_ascending"), label = "Ascending",
-                status = "primary", value = TRUE, shape = "curve", outline = TRUE
-              )
+                status = "primary", value = TRUE, shape = "curve", outline = TRUE)
             ),
-
             circle = FALSE, status = "block",
             width = "100%",
             label = "Manage background data"),
           hr(),
           shinyWidgets::dropdownButton(
-            inputId = ns("scale_level"),
+            inputId = ns("scale_level")),
             shinyWidgets::prettyCheckbox(
               inputId = "metric", label = "All variables are metric.",
               status = "primary", value = FALSE, shape = "curve", outline = TRUE
@@ -63,19 +61,20 @@ background_dataUI <- function(id){
             circle = FALSE, status = "block",
             width = "100%",
             label = "Set scale levels of background data")
-        )),
-      mainPanel(tabsetPanel(
+        ),
+      mainPanel(
         tabPanel("Manage", value = 1,
                  verbatimTextOutput(ns("summary")),
                  dataTableOutput(ns("bgdata_display"))))
-      )))
+      ))
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-background_dataServer<- function(id){
-  moduleServer(id,function(input, output, session){
+Server_background_data <- function(id){
+  moduleServer(id, function(input, output, session){
+
     filter_data <- function(filter_op, filter_var, filter_val, out) {
       switch(filter_op,
              "<" = dplyr::filter(out, .data[[filter_var]] < filter_val),
@@ -216,11 +215,11 @@ background_dataServer<- function(id){
 
       out
     })
+
     output$bgdata_display <- renderDataTable(
       bgdata_display(),
       options = list(pageLength = 25)
     )
 
-
-  })
+})
 }

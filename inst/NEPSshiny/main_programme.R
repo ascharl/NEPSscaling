@@ -12,15 +12,18 @@ source("module_tables.R")
 
 ui <- shinyUI(
   navbarPage(id = "navbar",
-             theme = bslib::bs_theme(
-               bg = "#E8E6F4", fg = "black", primary = "#24195D", secondary = "#1D0E46",
-               "font-size-base" = "1.5rem",
-               base_font = bslib::font_google("Open Sans"),
-               code_font = bslib::font_google("Open Sans")
-             ),
              tabsetPanel(
-             tabPanel(fluidRow(
-               column(2, offset = 1, img(height = 50, width = 100, src = "NEPSscaling_Logo_3.png")))
+             shinyjs::useShinyjs(),
+             tabPanel(background_dataUI("tab1"))),
+             tabPanel(PV_objUI("tab2")),
+             tabPanel(Plausible_ValuesUI("tab3")),
+             tabPanel(distribution_plotsUI("tab4")),
+             tabPanel(imputation_plotUI("tab5")),
+             tabPanel(variable_importance_plotUI("tab6")),
+             tabPanel(tablesUI("tab7"))),
+
+             header= fluidRow(
+               column(2, offset = 1, img(height = 50, width = 100, src = "NEPSscaling_Logo_3.png"))
                ,
                tags$head(
                  tags$style(
@@ -35,7 +38,6 @@ ui <- shinyUI(
              width: 100%;
              color: #E8E6F4;
              background-color: #24195D;
-             word-break: break-all;
              word-wrap: break-word;
              white-space: normal;
           }
@@ -57,28 +59,25 @@ ui <- shinyUI(
              color: #E8E6F4;
              background-color: #24195D;
           }"
-                   )
-                 )
-               )),
-             # print output to shiny:
-             # https://stackoverflow.com/questions/30474538/possible-to-show-console-messages-written-with-message-in-a-shiny-ui/30490698#3049069844446666666
-             shinyjs::useShinyjs(),
-             tabPanel(background_dataUI("one")),
-             tabPanel(PV_objUI("two")),
-             tabPanel(Plausible_ValuesUI("three")),
-             tabPanel(distribution_plotsUI("four")),
-             tabPanel(imputation_plotUI("five")),
-             tabPanel(variable_importance_plotUI("six")),
-             tabPanel(tablesUI("seven")))))
+                   )))),
+             theme = bslib::bs_theme(
+               bg = "#E8E6F4", fg = "black", primary = "#24195D", secondary = "#1D0E46",
+               "font-size-base" = "1.5rem",
+               base_font = bslib::font_google("Open Sans"),
+               code_font = bslib::font_google("Open Sans")
+             )
+  )
+)
 
-server <- function(input, output){
-  moduleServer(background_data, "one")
-  moduleServer(PV_obj, "two")
-  moduleServer(Plausible_Values, "three")
-  moduleServer(distribution_plots, "four")
-  moduleServer(imputation_plot, "five")
-  moduleServer(variable_importance_plot, "six")
-  moduleServer(tables, "seven")
+
+server <- function(input, output, session){
+  moduleServer(Server_background_data, "tab1")
+  moduleServer(PV_objServer,"tab2")
+  moduleServer(Plausible_ValuesServer, "tab3")
+  moduleServer(distribution_plotsServer, "tab4")
+  moduleServer(imputation_plotServer, "tab5")
+  moduleServer(variable_importance_plotServer, "tab6")
+  moduleServer(tablesServer,"tab7")
 }
 
-shinyApp(ui, server)
+shinyApp(ui = ui, server = server)

@@ -9,20 +9,19 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-Plausible_ValuesUI <- function(three){
-  ns <- NS(three)
-  tagList(
+Plausible_ValuesUI <- function(id){
+  ns <- NS(id)
     sidebarLayout(
       sidebarPanel(
         conditionalPanel(
-          condition = "input.conditionedPanels==2",
+          condition = "input.conditionedPanels==2",ns=ns,
           h4("Arguments for Plausible Values Estimation"),
-          selectInput("select_starting_cohort",
+          selectInput(ns("select_starting_cohort"),
                       label = "Starting cohort",
                       choices = 1:6,
                       selected = ""
           ),
-          selectInput("select_domain",
+          selectInput(ns("select_domain"),
                       label = "Competence domain",
                       choices = c(
                         "Mathematics" = "MA", "Reading" = "RE", "Science" = "SC",
@@ -37,26 +36,26 @@ Plausible_ValuesUI <- function(three){
                       ),
                       selected = ""
           ),
-          selectInput("select_wave",
+          selectInput(ns("select_wave"),
                       label = "Assessment wave",
                       choices = 1:12,
                       selected = ""
           ),
-          textInput(inputId = "path_to_data", label = "Directory with competence data (SUFs)",
+          textInput(inputId = ns("path_to_data"), label = "Directory with competence data (SUFs)",
                     value = getwd()),
 
           shinyWidgets::dropdownButton(
-            inputId = "output_parameters",
-            numericInput("npv", label = "Number of plausible values",
+            inputId = ns("output_parameters"),
+            numericInput(ns("npv"), label = "Number of plausible values",
                          value = 10, min = 1),
-            numericInput("nmi", label = "Number of imputations",
+            numericInput(ns("nmi"), label = "Number of imputations",
                          value = 10, min = 1),
             shinyWidgets::prettyCheckbox(
-              inputId = "WLE", label = "Return WLEs?",
+              inputId = ns("WLE"), label = "Return WLEs?",
               status = "primary", value = FALSE, shape = "curve", outline = TRUE
             ),
             shinyWidgets::prettyCheckbox(
-              inputId = "EAP", label = "Return EAPs?",
+              inputId = ns("EAP"), label = "Return EAPs?",
               status = "primary", value = FALSE, shape = "curve", outline = TRUE
             ),
 
@@ -66,49 +65,49 @@ Plausible_ValuesUI <- function(three){
           ),
           tags$hr(),
           shinyWidgets::dropdownButton(
-            inputId = "model_parameters",
+            inputId = ns("model_parameters"),
             shinyWidgets::prettyCheckbox(
-              inputId = "longitudinal", label = "Use of longitudinal competence tests?",
+              inputId = ns("longitudinal"), label = "Use of longitudinal competence tests?",
               status = "primary", value = FALSE, shape = "curve", outline = TRUE
             ),
             shinyWidgets::prettyCheckbox(
-              inputId = "rotation",
+              inputId = ns("rotation"),
               label = tags$text("Include position of", #br(),
                                 "competence test?"),
               status = "primary", value = TRUE, shape = "curve", outline = TRUE
             ),
             shinyWidgets::prettyCheckbox(
-              inputId = "adjust_school_context",
+              inputId = ns("adjust_school_context"),
               label = tags$text("Include proxy for school", #br(),
                                 "context?"),
               status = "primary", value = TRUE, shape = "curve", outline = TRUE
             ),
             shinyWidgets::prettyCheckbox(
-              inputId = "include_nr",
+              inputId = ns("include_nr"),
               label = tags$text("Include proxy for processing", #br(),
                                 "speed?"),
               status = "primary", value = TRUE, shape = "curve", outline = TRUE
             ),
-            numericInput("min_valid",
+            numericInput(ns("min_valid"),
                          label = "Minimum number of valid answers to competence test(s)",
                          value = 3, min = 0),
-            numericInput("seed",
+            numericInput(ns("seed"),
                          label = "Seed for random number generator",
                          value = sample(0:100000, 1),
                          min = 0),
-            selectInput(inputId = "exclude1", label = "Variables to exclude from bg data",
+            selectInput(inputId = ns("exclude1"), label = "Variables to exclude from bg data",
                         choices = "", multiple = TRUE),
             shinyjs::hidden(
-              selectInput(inputId = "exclude2",
+              selectInput(inputId = ns("exclude2"),
                           label = "Variables to exclude (2nd wave)",
                           choices = "", multiple = TRUE),
-              selectInput(inputId = "exclude3",
+              selectInput(inputId = ns("exclude3"),
                           label = "Variables to exclude (3rd wave)",
                           choices = "", multiple = TRUE),
-              selectInput(inputId = "exclude4",
+              selectInput(inputId = ns("exclude4"),
                           label = "Variables to exclude (4th wave)",
                           choices = "", multiple = TRUE),
-              selectInput(inputId = "exclude5",
+              selectInput(inputId = ns("exclude5"),
                           label = "Variables to exclude (5th wave)",
                           choices = "", multiple = TRUE)
             ),
@@ -119,12 +118,12 @@ Plausible_ValuesUI <- function(three){
           ),
           tags$hr(),
           shinyWidgets::prettyCheckbox(
-            inputId = "verbose", label = "Progress reports?",
+            inputId = ns("verbose"), label = "Progress reports?",
             status = "primary", value = TRUE, shape = "curve", outline = TRUE
           ),
           # other controls: not changeable!,
           hr(),
-          actionButton("estimate_pv_obj", label = "Start estimation")
+          actionButton(ns("estimate_pv_obj"), label = "Start estimation")
         )),
       mainPanel(
         tabsetPanel(
@@ -132,14 +131,13 @@ Plausible_ValuesUI <- function(three){
                    h3(textOutput("plausible_values_progress")))
         ))
       )
-  )
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-Plausible_ValuesServer <- function(three){
-  moduleServer(three,function(input, output, session){
+Plausible_ValuesServer <- function(id){
+  moduleServer(id,function(input, output, session){
 observeEvent(input$estimate_pv_obj, {
 
   req(

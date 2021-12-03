@@ -1,15 +1,15 @@
 # Module PV_obj
-# uploades already existing PV_obj or downloades the created PV_obj used to estimate plausible values
+# uploads already existing PV_obj or downloads the created PV_obj used to estimate plausible values
 
-#' @param upload, downloade and remove background data
+#' @param upload, download and remove background data
 #' @return plausible values object to use for the estimation of plausible values
 
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
 
-PV_objUI <- function(one){
-  ns <- NS(one)
+PV_objUI <- function(id){
+  ns <- NS(id)
   tagList(
   sidebarLayout(
     sidebarPanel(
@@ -17,22 +17,21 @@ PV_objUI <- function(one){
       shinyWidgets::dropdownButton(
 
         tags$strong("Download pv_obj"),
-        textInput(
-          "pv_obj_name", label = "Choose file name",
+        textInput(ns("pv_obj_name"), label = "Choose file name",
           value = paste0("pv_obj_", gsub(":", "-", gsub(" ", "_", Sys.time())))
         ),
-        downloadButton("download_pv_obj", label = "Download pv_obj (.rds)"),
-        selectInput("export_format", label = "Select export format",
+        downloadButton(ns("download_pv_obj"), label = "Download pv_obj (.rds)"),
+        selectInput(ns("export_format"), label = "Select export format",
                     choices = c("SPSS", "Stata", "Mplus")),
-        downloadButton("export_pv_obj", label = "Export pv_obj"),
+        downloadButton(ns("export_pv_obj"), label = "Export pv_obj"),
 
         circle = FALSE, status = "block",
         width = "100%",
         label = "Manage pv_obj"
         ,
         hr(),
-        inputId = "input_pv_obj",
-        fileInput(inputId = "import_state",
+        inputId = ns("input_pv_obj"),
+        fileInput(inputId = ns("import_state"),
                   label = tags$strong("Import pv_obj"),
                   multiple = FALSE, accept = ".rds"),
         tags$span(style = "font-size: 0.75em;",
@@ -40,7 +39,7 @@ PV_objUI <- function(one){
 
         hr(),
 
-        actionButton(inputId = "remove_pv_obj", label =  "Remove pv_obj"))),
+        actionButton(inputId = ns("remove_pv_obj"), label =  "Remove pv_obj"))),
   mainPanel(tabsetPanel(
     tabPanel("Estimate Plausible Values", value = 2,
            h3(textOutput("plausible_values_progress")))))))
@@ -49,8 +48,9 @@ PV_objUI <- function(one){
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-PV_objServer <- function(one){
-moduleServer(one,function(input, output, session){
+PV_objServer <- function(id){
+moduleServer(id,
+function(input, output, session){
   observe({
     req(input$import_state)
     validate(need(tools::file_ext(input$import_state$datapath) == "rds",

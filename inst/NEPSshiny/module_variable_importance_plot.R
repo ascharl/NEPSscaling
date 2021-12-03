@@ -8,19 +8,19 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-variable_importance_plotUI <- function(six){
-  ns <- NS(six)
+variable_importance_plotUI <- function(id){
+  ns <- NS(id)
   tagList(
     sidebarLayout(
       sidebarPanel(
         hr(),
         shinyWidgets::dropdownButton(
-          inputId = "plots_variable_importance",
-          selectInput(inputId = "imputation_var_imp",
+          inputId = ns("plots_variable_importance"),
+          selectInput(inputId = ns("imputation_var_imp"),
                       label = "Select imputation", choices = ""),
-          selectInput(inputId = "variable_var_imp",
+          selectInput(inputId = ns("variable_var_imp"),
                       label = "Select variable", choices = ""),
-          actionButton(inputId = "variable_importance_plot",
+          actionButton(inputId = ns("variable_importance_plot"),
                        label = "Display variable importance plot"),
 
           circle = FALSE, status = "block",
@@ -33,16 +33,16 @@ variable_importance_plotUI <- function(six){
         tabsetPanel(
           tabPanel("Plots", value = 3,
                    conditionalPanel(
-                     condition = "output.plots_conditional_visible==3",
+                     condition = "output.plots_conditional_visible==3",ns=ns,
                      tags$h3("Variable importance plots"),
-                     plotOutput("variable_importance_plot"),
-                     textInput("variable_importance_name", label = "Plot name",
+                     plotOutput(ns("variable_importance_plot")),
+                     textInput(ns("variable_importance_name"), label = "Plot name",
                                value = paste0("variable_importance_",
                                               gsub(":", "-", gsub(" ", "_", Sys.time())))),
-                     selectInput("variable_importance_format",
+                     selectInput(ns("variable_importance_format"),
                                  label = "Select export format",
                                  choices = c("png", "RData")),
-                     downloadButton(outputId = "download_variable_importance",
+                     downloadButton(outputId = ns("download_variable_importance"),
                                     label = "Download plot")
                    ))
         )
@@ -53,8 +53,8 @@ variable_importance_plotUI <- function(six){
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-variable_importance_plotServer <- function(six){
-  moduleServer(six,function(input, output, session){
+variable_importance_plotServer <- function(id){
+  moduleServer(id,function(input, output, session){
 
     variable_importance_plot <- eventReactive(input$variable_importance_plot, {
       req(values$pv_obj, input$imputation_var_imp, input$variable_var_imp)
