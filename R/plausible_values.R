@@ -301,7 +301,6 @@ plausible_values <- function(SC,
         (SC == "SC6" & domain %in% c("IC", "SC")) ||
         (SC == "SC5" & domain %in% c("IC", "SC", "BA", "EF")) ||
         (SC == "SC3" & domain %in% c("ST", "LI")) ||
-        (SC == "SC2" & domain %in% c("GR")) ||
         (SC == "SC1" & domain %in% c("CD", "SC"))
       )
   ) {

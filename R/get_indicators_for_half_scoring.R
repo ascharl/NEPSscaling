@@ -66,6 +66,10 @@ get_indicators_for_half_scoring <- function(SC, domain, wave) {
       } else if (wave == "w9") {
         ind <- c("mag7d06s_c", "mag7r02s_sc2g7_c")
       }
+    } else if (domain == "GR") {
+      if (wave == "w3") {
+        ind <- c("grg1o000s_c", "grg1r000s_c")
+      }
     }
   } else if (SC == "SC3") {
     if (domain == "MA") {

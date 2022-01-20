@@ -24,6 +24,9 @@ select_test_responses_and_test_takers <- function(longitudinal, SC, domain,
         if (SC %in% c("SC3", "SC4") & domain == "EF") {
           resp[[i]] <- impute_english_competence_data(resp[[i]], SC, wave = i)
         }
+        if (SC == "SC2" & domain == "GR" & i == "w3") {
+          resp[[i]] <- aggregate_grammar_items(resp[[i]])
+        }
       }
     }
     data <-
@@ -43,6 +46,8 @@ select_test_responses_and_test_takers <- function(longitudinal, SC, domain,
     data <- data[order(data[["ID_t"]]), ]
     if (SC == "SC4" & domain == "ST") {
       resp <- aggregate_scientific_thinking_items(resp)
+    } else if (SC == "SC2" & domain == "GR" & wave == "w3") {
+      resp <- aggregate_grammar_items(resp)
     }
     if (SC %in% c("SC3", "SC4") & domain == "EF") {
       resp <- impute_english_competence_data(resp, SC, wave)
@@ -111,5 +116,26 @@ aggregate_scientific_thinking_items <- function(resp) {
                          na.rm = TRUE)
   }
   resp <- resp[, c("ID_t", items)]
+  resp
+}
+
+#' aggregation of individual GR items to PC items (SC2)
+#'
+#' they were published in their sub-item form in the SUF instead of as PC items
+#'
+#' @param resp data.frame; xTargetCompetencies
+#'
+#' @return response data.frame with aggregated items; individual items are
+#' dropped
+#' @noRd
+aggregate_grammar_items <- function(resp) {
+  items <- c("grg1o000s_c", "grg1r000s_c")
+  for (i in items) {
+    sel <- grep(substr(i, 1, 5), names(resp), value = TRUE)
+    resp[[i]] <- rowSums(resp[, sel], na.rm = TRUE)
+    for (it in sel) {
+      resp[[it]] <- NULL
+    }
+  }
   resp
 }
