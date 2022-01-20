@@ -9,6 +9,7 @@
 ##########################################################################################################################################
 distribution_plots_sidebarUI <- function(id){
   ns <- NS(id)
+  tagList(
           conditionalPanel(
           condition = "input.conditionedPanels==3", ns=ns,
           shinyWidgets::dropdownButton(
@@ -33,12 +34,15 @@ distribution_plots_sidebarUI <- function(id){
             width = "100%",
             label = "Plots for plausible values and imputations"
           ))
+  )
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-distribution_plots_sidebarServer <- function(id){
+##braucht average_pvs()
+
+distribution_plots_sidebarServer <- function(id, values){
   moduleServer(id,function(input, output, session){
 
 # select columns, filter by values, select rows

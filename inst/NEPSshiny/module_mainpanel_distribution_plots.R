@@ -9,6 +9,7 @@
 ##########################################################################################################################################
 distribution_plots_mainpanelUI <- function(id){
   ns <- NS(id)
+  tagList(
   tabsetPanel(
     tabPanel("Plots", value = 3,
              conditionalPanel(
@@ -24,18 +25,22 @@ distribution_plots_mainpanelUI <- function(id){
                downloadButton(outputId = ns("download_plot"),
                               label = "Download plot")
              )))
+  )
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-distribution_plots_mainpanelServer <- function(id){
-  moduleServer(id,function(input, output, session){
+# braucht imputations_display() aus der sidebar
+
+distribution_plots_mainpanelServer <- function(id,values){
+  moduleServer(function(input, output, session){
 
 output$imputations_display <- renderDataTable(
   imputations_display(),
   options = list(pageLength = 50)
 )
+
 output$download_plot <- downloadHandler(
   filename = function() {
     req(input$plot_name, input$plot_format)
@@ -61,6 +66,7 @@ observeEvent(input$plots_distribution_plot_state, {
 output$plots_conditional_visible <- renderText({
   values$plots_conditional_visible
 })
+
 outputOptions(output, "plots_conditional_visible", suspendWhenHidden = FALSE)
 })
 }

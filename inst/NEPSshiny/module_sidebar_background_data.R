@@ -1,8 +1,10 @@
-# Module: Sidebar of background data
-# manages the background data used to estimate plausible values
+#' Module: Sidebar of background data
+#' manages the background data used to estimate plausible values
+#' Consists of three subsections (dropdownButtons):Manage background data, Manage PV_obj, set scale levels of background data
 
-#' @param upload,inspect and remove background data
-#' @return background data ready to use for the estimation of plausible values
+#' @param values: consists of the reactive values pv_obj, bgdata_raw, bgdata, bgdata_display
+
+#' @return bgdata ready to use for the estimation of plausible values
 
 ##########################################################################################################################################
 ## UI
@@ -10,8 +12,9 @@
 
 background_data_sidebarUI <- function(id){
   ns <- NS(id)
+  tagList(
   conditionalPanel(
-          condition = "input.conditionedPanels== 1",
+          condition = "input.Panel1== 1",
           ns=ns,
           shinyWidgets::dropdownButton(
             inputId = ns("input_bgdata"),
@@ -59,36 +62,15 @@ background_data_sidebarUI <- function(id){
             circle = FALSE, status = "block",
             width = "100%",
             label = "Set scale levels of background data")
+  )
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-background_data_sidebarServer <- function(id){
+
+background_data_sidebarServer <- function(id, values){
   moduleServer(id, function(input, output, session){
-
-    filter_data <- function(filter_op, filter_var, filter_val, out) {
-      switch(filter_op,
-             "<" = dplyr::filter(out, .data[[filter_var]] < filter_val),
-             ">" = dplyr::filter(out, .data[[filter_var]] > filter_val),
-             "<=" = dplyr::filter(out, .data[[filter_var]] <= filter_val),
-             ">=" = dplyr::filter(out, .data[[filter_var]] >= filter_val),
-             "==" = dplyr::filter(out, .data[[filter_var]] == filter_val),
-             "!=" = dplyr::filter(out, .data[[filter_var]] != filter_val),
-             showNotification(paste("Filter operator", filter_op, "not valid."),
-                              type = "error")
-      )
-    }
-
-    session$onSessionEnded(function() {
-      stopApp()
-    })
-
-    values <- reactiveValues(
-      pv_obj = NULL,
-      bgdata_raw = NULL,
-      bgdata = NULL
-    )
 
     observeEvent(input$import_bgdata, {
       req(input$import_bgdata)
@@ -112,7 +94,7 @@ background_data_sidebarServer <- function(id){
 
       updateSelectInput(session = session, inputId = "ordinal",
                         label = "Select ordinal variables", choices = names(out))
-      updateSelectInput(session = session, inputId = "nominal",
+      updateSelectInput(session = parent, inputId = "nominal",
                         label = "Select nominal variables", choices = names(out))
 
       updateSelectInput(session = session, inputId = "bgdata_select_cols",
@@ -147,19 +129,19 @@ background_data_sidebarServer <- function(id){
       }
 
       choices <- colnames(out[, -which(names(out) == "ID_t")])
-      updateSelectInput(session = session, inputId = "exclude1",
+      updateSelectInput(session = parent, inputId = "exclude1",
                         label = "Variables to exclude from bg data",
                         choices = choices, selected = "")
-      updateSelectInput(session = session, inputId = "exclude2",
+      updateSelectInput(session = parent, inputId = "exclude2",
                         label = "Variables to exclude (2nd wave)",
                         choices = choices, selected = "")
-      updateSelectInput(session = session, inputId = "exclude3",
+      updateSelectInput(session = parent, inputId = "exclude3",
                         label = "Variables to exclude (3rd wave)",
                         choices = choices, selected = "")
-      updateSelectInput(session = session, inputId = "exclude4",
+      updateSelectInput(session = parent, inputId = "exclude4",
                         label = "Variables to exclude (4th wave)",
                         choices = choices, selected = "")
-      updateSelectInput(session = session, inputId = "exclude5",
+      updateSelectInput(session = parent, inputId = "exclude5",
                         label = "Variables to exclude (5th wave)",
                         choices = choices, selected = "")
 
@@ -174,7 +156,7 @@ background_data_sidebarServer <- function(id){
     })
 
 
-    bgdata_display <- reactive({
+    values$bgdata_display <- reactive({
       req(values$bgdata)
       out <- values$bgdata
 
@@ -201,11 +183,44 @@ background_data_sidebarServer <- function(id){
         }
       }
 
-      updateSelectInput(session = session, inputId = "bgdata_sort_cases",
+      updateSelectInput(session = parent, inputId = "bgdata_sort_cases",
                         label = "Sort by", choices = names(out),
                         selected = "")
 
       out
+    })
+
+    observeEvent(input$remove_bgdata, {
+      values$bgdata_raw <- values$bgdata <- NULL
+
+      if (is.null(values$pv_obj)) {
+        updateSelectInput(session = session, inputId = "ordinal",
+                          label = "Select ordinal variables", choices = "")
+        updateSelectInput(session = session, inputId = "nominal",
+                          label = "Select nominal variables", choices = "")
+
+        updateSelectInput(session = session, inputId = "bgdata_select_cols",
+                          label = "Select columns", choices = "",
+                          selected = "")
+        updateSelectInput(session = session, inputId = "bgdata_sort_cases",
+                          label = "Sort by", choices = "",
+                          selected = "")
+        updateSelectInput(session = session, inputId = "exclude1",
+                          label = "Variables to exclude from bg data",
+                          choices = "", selected = "")
+        updateSelectInput(session = session, inputId = "exclude2",
+                          label = "Variables to exclude (2nd wave)",
+                          choices = "", selected = "")
+        updateSelectInput(session = session, inputId = "exclude3",
+                          label = "Variables to exclude (3rd wave)",
+                          choices = "", selected = "")
+        updateSelectInput(session = session, inputId = "exclude4",
+                          label = "Variables to exclude (4th wave)",
+                          choices = "", selected = "")
+        updateSelectInput(session = session, inputId = "exclude5",
+                          label = "Variables to exclude (5th wave)",
+                          choices = "", selected = "")
+      }
     })
 
 

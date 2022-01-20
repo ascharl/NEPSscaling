@@ -11,8 +11,7 @@
 ##########################################################################################################################################
 Plausible_Values_sidebarUI <- function(id){
   ns <- NS(id)
-    sidebarLayout(
-      sidebarPanel(
+    tagList(
         conditionalPanel(
           condition = "input.conditionedPanels==2",ns=ns,
           h4("Arguments for Plausible Values Estimation"),
@@ -124,19 +123,13 @@ Plausible_Values_sidebarUI <- function(id){
           # other controls: not changeable!,
           hr(),
           actionButton(ns("estimate_pv_obj"), label = "Start estimation")
-        )),
-      mainPanel(
-        tabsetPanel(
-          tabPanel("Estimate Plausible Values", value = 2,
-                   h3(textOutput("plausible_values_progress")))
         ))
-      )
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-Plausible_Values_sidebarServer <- function(id){
+Plausible_Values_sidebarServer <- function(id, values){
   moduleServer(id,function(input, output, session){
 observeEvent(input$estimate_pv_obj, {
 

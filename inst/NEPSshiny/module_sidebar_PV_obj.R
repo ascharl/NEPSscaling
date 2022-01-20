@@ -10,6 +10,7 @@
 
 PV_obj_sidebarUI <- function(id){
   ns <- NS(id)
+  tagList(
      shinyWidgets::dropdownButton(
 
         tags$strong("Download pv_obj"),
@@ -36,13 +37,14 @@ PV_obj_sidebarUI <- function(id){
         hr(),
 
         actionButton(inputId = ns("remove_pv_obj"), label =  "Remove pv_obj"))
+  )
 
 }
 
 ##########################################################################################################################################
 ## Server
 ##########################################################################################################################################
-PV_objServer <- function(id){
+PV_objServer <- function(id, values){
 moduleServer(id,
 function(input, output, session){
   observe({

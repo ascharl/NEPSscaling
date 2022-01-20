@@ -9,10 +9,11 @@
 ##########################################################################################################################################
 ## UI
 ##########################################################################################################################################
-Plausible_Values_mainpanelUI <- function(id){
+Plausible_Values_mainpanelUI <- function(id, values){
   ns <- NS(id)
-mainPanel(
+  tagList(
   tabsetPanel(
     tabPanel("Estimate Plausible Values", value = 2,
-             h3(textOutput("plausible_values_progress")))))
+             h3(textOutput("plausible_values_progress"))))
+  )
 }
