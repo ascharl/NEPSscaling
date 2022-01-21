@@ -378,7 +378,7 @@ plausible_values <- function(SC,
 
   # test data and test taker selection
   res <- select_test_responses_and_test_takers(
-    longitudinal, SC, domain, data, wave, min_valid
+    longitudinal, SC, domain, data, wave, waves_ = gsub("_", "", waves), min_valid
   )
   data <- res[["data"]]
   resp <- res[["resp"]]

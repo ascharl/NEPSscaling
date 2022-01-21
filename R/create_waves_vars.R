@@ -73,6 +73,8 @@ create_waves_vars <- function(longitudinal, SC, domain, wave) {
         waves <- c("_w1", "_w3", "_w5")
       } else if (domain == "RE") {
         waves <- c("_w6", "_w9")
+      } else if (domain == "GR") {
+        waves <- c("_w1", "_w3")
       }
     }
     if (SC == "SC1") {

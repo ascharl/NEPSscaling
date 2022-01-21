@@ -5,6 +5,7 @@
 #' @param domain character; abbr. for competence domain (e.g. "MA", "RE")
 #' @param data data.frame; xTargetCompetencies
 #' @param wave character; wave of test ("wx")
+#' @param waves_ character vector; waves of longitudinal tests ("wx", "wy")
 #' @param min_valid numeric; minimum number of valid test responses per person
 #'
 #' @return list of response data.frame (a list with one data.frame for each
@@ -13,18 +14,18 @@
 #' @noRd
 
 select_test_responses_and_test_takers <- function(longitudinal, SC, domain,
-                                                  data, wave, min_valid) {
+                                                  data, wave, waves_, min_valid) {
   if (longitudinal) {
     if (SC == "SC6" && domain == "RE") {
       resp <- select_longitudinal_sc6_reading(data, SC, domain, min_valid)
     } else {
       resp <- list()
       for (i in seq(length(item_labels[[domain]][[SC]]))) {
-        resp[[i]] <- select_data(data, SC, domain, wave = i, min_valid)
+        resp[[i]] <- select_data(data, SC, domain, wave = waves_[i], min_valid)
         if (SC %in% c("SC3", "SC4") & domain == "EF") {
-          resp[[i]] <- impute_english_competence_data(resp[[i]], SC, wave = i)
+          resp[[i]] <- impute_english_competence_data(resp[[i]], SC, wave = waves_[i])
         }
-        if (SC == "SC2" & domain == "GR" & i == "w3") {
+        if (SC == "SC2" & domain == "GR" & waves_[i] == "w3") {
           resp[[i]] <- aggregate_grammar_items(resp[[i]])
         }
       }

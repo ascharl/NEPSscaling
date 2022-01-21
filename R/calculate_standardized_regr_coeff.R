@@ -23,7 +23,7 @@ calculate_standardized_regr_coeff <- function(regr.coeff, datalist,
   } else {
     sdX <- lapply(datalist, function(dat) {
       apply(
-        model.matrix(~., dat[, !grepl("ID_t|PV", names(dat))])[, -1],
+        model.matrix(~., dat[, !grepl("ID_t|PV", names(dat)), drop = FALSE])[, -1, drop = FALSE],
         2, sd, na.rm = TRUE)
     })
   }
