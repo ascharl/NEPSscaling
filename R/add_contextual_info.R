@@ -25,7 +25,13 @@ add_contextual_info <- function(path, SC, domain, waves, bgdata, data) {
   # get group average per school
   school_data <- calculate_school_average(school_data, waves, wle_vnames) # below
 
-  bgdata <- combine_with_bgdata(bgdata, school_data) # below
+  if (inherits(bgdata, "list") ) {
+    for (i in 1:length(bgdata)) {
+      bgdata[[i]] <- combine_with_bgdata(bgdata[[i]], school_data) # below
+    }
+  } else {
+    bgdata <- combine_with_bgdata(bgdata, school_data) # below
+  }
   bgdata
 }
 

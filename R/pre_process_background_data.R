@@ -14,17 +14,32 @@
 pre_process_background_data <- function(bgdata, data, include_nr,
                                         items_not_reached, min_valid) {
   if (!is.null(bgdata)) {
-    res <- adjust_for_min_value(min_valid, bgdata, data)
-    bgdata <- res$bgdata
-    data <- res$data
-
-    bgdata <- substitute_missing_persons_in_bgdata(bgdata, data)
-
-    bgdata <- remove_columns_without_data_from_bgdata(bgdata)
+    if (inherits(bgdata, "list") ) {
+      for (i in 1:length(bgdata)) {
+        res <- adjust_for_min_value(min_valid, bgdata[[i]], data)
+        bgdata[[i]] <- res$bgdata
+        data <- res$data
+        bgdata[[i]] <- substitute_missing_persons_in_bgdata(bgdata[[i]], data)
+        bgdata[[i]] <- remove_columns_without_data_from_bgdata(bgdata[[i]])
+      }
+    } else {
+      res <- adjust_for_min_value(min_valid, bgdata, data)
+      bgdata <- res$bgdata
+      data <- res$data
+      bgdata <- substitute_missing_persons_in_bgdata(bgdata, data)
+      bgdata <- remove_columns_without_data_from_bgdata(bgdata)
+    }
   }
   ID_t <- data[, "ID_t", drop = FALSE]
-  bgdata <- add_not_reached_to_bgdata(bgdata, ID_t, items_not_reached,
-                                      include_nr)
+  if (inherits(bgdata, "list") ) {
+    for (i in 1:length(bgdata)) {
+      bgdata[[i]] <- add_not_reached_to_bgdata(bgdata[[i]], ID_t,
+                                               items_not_reached, include_nr)
+    }
+  } else {
+    bgdata <- add_not_reached_to_bgdata(bgdata, ID_t, items_not_reached,
+                                        include_nr)
+  }
   list(data = data, bgdata = bgdata, ID_t = ID_t)
 }
 

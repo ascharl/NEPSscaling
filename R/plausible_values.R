@@ -14,6 +14,9 @@
 #' variables have to be specified as factors. If \code{bgdata = NULL}, plausible
 #' values are estimated without a background model. Missing data in the
 #' covariates is imputed using sequential classification and regression trees.
+#' If pre-imputed background data is to be used, it has to be formatted as a
+#' list of \code{nmi} data.frames containing at least ID_t and 1 further variable;
+#' categorical variables have to be specified as factors as well.
 #' @param npv numeric; number of plausible values to be estimated; defaults to
 #' 10.
 #' @param nmi numeric; denotes the number of multiple imputations for missing
@@ -44,6 +47,8 @@
 #' (the default is TRUE)
 #' @param seed integer; seed for random number generators in plausible values
 #' estimation
+#' @param returnAll logical; if TRUE all estimated PVs during nested imputation
+#' are returned, otherwise only \code{npv} PVs are returned. Defaults to FALSE.
 #' @param control list of additional options. If \code{EAP = TRUE}, the EAPs
 #' will be returned as well; for \code{WLE = TRUE} WLEs are returned.
 #' Furthermore, additional control options for are collected in the list `ML`.
@@ -235,6 +240,7 @@ plausible_values <- function(SC,
                              adjust_school_context = TRUE,
                              exclude = NULL,
                              seed = NULL,
+                             returnAll = FALSE,
                              control = list(
                                EAP = FALSE, WLE = FALSE,
                                ML = list(
@@ -325,11 +331,41 @@ plausible_values <- function(SC,
          call. = FALSE)
   }
   if (!is.null(bgdata)) {
-    if (!is.data.frame(bgdata)) {
-      stop("bgdata must be a data.frame.")
-    }
-    if (is.null(bgdata[["ID_t"]])) {
-      stop("ID_t must be included in bgdata.")
+    if (inherits(bgdata, "list") ) {
+      if (length(bgdata) != nmi) {
+        stop(paste0(
+          "The number of imputed data sets does not equal the specified ",
+          "number of imputations 'nmi'."
+        ), call. = FALSE)
+      }
+      if (!all(sapply(bgdata, is.data.frame))) {
+        stop(paste0(
+          "All data sets in bgdata must be formatted as data.frames"
+        ), call. = FALSE)
+      }
+      if (!(sum(unlist(lapply(bgdata, names)) %in% "ID_t") == nmi)) {
+        stop(paste0(
+          "ID_t must be included in all imputed bgdata sets."
+        ), call. = FALSE)
+      }
+      if (any(sapply(bgdata, ncol)) < 2) {
+        stop(paste0(
+          "The list of imputed bgdata sets must include at least one variable ",
+          "apart from ID_t."
+        ), call. = FALSE)
+      }
+      if (any(sapply(bgdata, is.na))) {
+        stop(paste0(
+          "Pre-imputed bgdata must not contain any NA."
+        ), call. = FALSE)
+      }
+    } else {
+      if (!is.data.frame(bgdata)) {
+        stop("bgdata must be a data.frame.")
+      }
+      if (is.null(bgdata[["ID_t"]])) {
+        stop("ID_t must be included in bgdata.")
+      }
     }
   }
 
@@ -443,6 +479,7 @@ plausible_values <- function(SC,
   bgdata <- res[["bgdata"]]
   variable_importance <- res[["variable_importance"]]
   treeplot <- res[["treeplot"]]
+  indmis <- res[["indmis"]]
 
   # begin estimation of plausible values --------------------------------------
 
@@ -511,7 +548,9 @@ plausible_values <- function(SC,
   }
 
   # extract correct number of plausible values from pvs object
-  datalist <- extract_correct_number_of_pvs(bgdata, nmi, npv, pvs)
+  res <- extract_correct_number_of_pvs(bgdata, nmi, npv, pvs, returnAll)
+  datalist <- res[["datalist"]]
+  npv <- res[["npv"]]
 
   # keep only those regr. coefficients / EAP reliabilities of kept imputations
   res <- discard_not_used_imputations(datalist, regr.coeff, EAP.rel,
@@ -631,6 +670,7 @@ plausible_values <- function(SC,
   if (!is.null(exclude)) {
     res[["exclude"]] <- exclude
   }
+  res[["indmis"]] <- indmis
   res[["comp_time"]] <- list(
     initial_time = t0,
     input_check = t1 - t0,

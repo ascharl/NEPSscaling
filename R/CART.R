@@ -36,7 +36,8 @@ CART <- function(
 
   keep <- sample(x = burnin:itermcmc, size = nmi, replace = FALSE)
 
-  out <- list(imp = list(), treeplot = list(), variable_importance = list())
+  out <- list(imp = list(), treeplot = list(), variable_importance = list(),
+              indmis = as.data.frame(XMIS))
   i <- 1
   for (ii in 1:itermcmc) {
     res <- seqcart(X, xmisord, XOBS, XMIS, minbucket, cp)

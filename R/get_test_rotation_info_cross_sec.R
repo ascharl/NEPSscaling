@@ -99,7 +99,15 @@ adjust_data_with_rotation_info <- function(data, resp, ID_t, bgdata, position) {
   resp <- resp[resp[["ID_t"]] %in% position[["ID_t"]], , drop = FALSE]
   ID_t <- ID_t[ID_t[["ID_t"]] %in% position[["ID_t"]], , drop = FALSE]
   if (!is.null(bgdata)) {
-    bgdata <- bgdata[bgdata[["ID_t"]] %in% position[["ID_t"]], , drop = FALSE]
+    if (inherits(bgdata, "list") ) {
+      for (i in 1:length(bgdata)) {
+        bgdata[[i]] <-
+          bgdata[[i]][bgdata[[i]][["ID_t"]] %in% position[["ID_t"]], ,
+                      drop = FALSE]
+      }
+    } else {
+      bgdata <- bgdata[bgdata[["ID_t"]] %in% position[["ID_t"]], , drop = FALSE]
+    }
   }
   # # possible NAs in position variable treated as third group
   # position[is.na(position[["position"]]), "position"] <- 3

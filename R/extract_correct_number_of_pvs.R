@@ -5,12 +5,14 @@
 #' covariate data (defaults to 10).
 #' @param npv numeric; number of plausible values
 #' @param pvs list of data.frames; contains completed bgdata and pvs
+#' @param returnAll logical; if TRUE all estimated PVs during nested imputation
+#' are returned, otherwise only \code{npv} PVs are returned. Defaults to FALSE.
 #'
 #' @return list of npv data.frames named after the nested combination of which
 #' imputation and which PV
 #' @noRd
 
-extract_correct_number_of_pvs <- function(bgdata, nmi, npv, pvs) {
+extract_correct_number_of_pvs <- function(bgdata, nmi, npv, pvs, returnAll) {
   datalist <- list()
   d <- 1
   for (i in 1:ifelse(is.null(bgdata) || !any(is.na(bgdata)), 1, nmi)) {
@@ -26,7 +28,11 @@ extract_correct_number_of_pvs <- function(bgdata, nmi, npv, pvs) {
       d <- d + 1
     }
   }
-  ind <- sample(1:length(datalist), npv)
-  datalist <- datalist[ind]
-  datalist
+  if (!returnAll) {
+    ind <- sample(1:length(datalist), npv)
+    datalist <- datalist[ind]
+  } else {
+    npv <- nmi * npv
+  }
+  list(datalist = datalist, npv = npv)
 }
