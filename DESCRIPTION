@@ -1,6 +1,6 @@
 Package: NEPSscaling
 Title: Tools for Plausible Values Estimation with NEPS data
-Version: 3.0.0
+Version: 3.1.0
 Authors@R: c(person("Anna", "Scharl", email = "anna.scharl@lifbi.de", role = c("aut", "cre")),
              person("Eva", "Zink", email = "eva.zink@lifbi.de", role = c("aut")))
 Description: NEPSscaling allows users of NEPS data to estimate individual 
